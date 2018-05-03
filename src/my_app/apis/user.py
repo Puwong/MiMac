@@ -5,12 +5,12 @@ from flask_restful import Api, Resource
 from my_app.foundation import csrf
 
 
-audit_bp = Blueprint('Audit', __name__)
-csrf.exempt(audit_bp)
-audit_api = Api(audit_bp)
+user_bp = Blueprint('User', __name__)
+csrf.exempt(user_bp)
+user_api = Api(user_bp)
 
 
-class AuditsAPI(Resource):
+class UsersAPI(Resource):
 
     def get(self, tid):
         from my_app.tasks import test_delay_1, test_delay_2
@@ -21,9 +21,9 @@ class AuditsAPI(Resource):
         return tid
 
 
-audit_api.add_resource(
-    AuditsAPI,
-    '/audits/<int:tid>',
-    endpoint='audits'
+user_api.add_resource(
+    UsersAPI,
+    '/Users/<int:tid>',
+    endpoint='users'
 )
 

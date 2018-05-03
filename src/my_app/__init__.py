@@ -128,18 +128,16 @@ def configure_foundations(app):
 
 
 def configure_blueprint(app, modules):
+    print modules
     for module, url_prefix in modules:
         app.register_blueprint(module, url_prefix=url_prefix)
 
-
+app = create_app()
+celery = make_celery(app)
 
 @app.route('/')
 def hello_world():
     return 'Hello World!'
-
-
-app = create_app()
-celery = make_celery(app)
 
 if __name__ == '__main__':
     app.run()

@@ -1,6 +1,8 @@
 import os
 from celery.schedules import crontab
 
+PROJECT_DIR = "/Users/megvii/MiMac"
+
 CSRF_ENABLED = True
 WTF_CSRF_TIME_LIMIT = 3600 * 48
 
@@ -15,13 +17,20 @@ MYSQL_DB = 'mimac'
 
 SQLALCHEMY_DATABASE_URI = 'mysql://%s:%s@%s:%s/%s' % (MYSQL_USER, MYSQL_PASS, MYSQL_HOST, MYSQL_PORT, MYSQL_DB)   # noqa
 
+LOGGER_SCREEN_OPEND = False
+LOGGER_PATH = os.path.join(PROJECT_DIR, 'logs')
+LOGGER_EDIT_SUBMIT = "logger_edit_submit.log"
+LOGGER_NORMAL = "logger_normal.log"
+LOGGER_ERROR = "logger_error.log"
+LOGGER_DEBUG = "logger_debug.log"
+
 
 CELERY_TIMEZONE = 'Asia/Shanghai'
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://127.0.0.1:6379/3')
 CELERY_ACCEPT_CONTENT = ['pickle', 'json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-CELERY_IMPORTS = ['app.tasks']
+CELERY_IMPORTS = ['my_app.tasks']
 CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://127.0.0.1:6379/4')  # NOQA
 CELERY_TASK_RESULT_EXPIRES = 3 * 24 * 3600
 CELERY_IGNORE_RESULT = False
@@ -33,21 +42,21 @@ CELERY_TRACK_STARTED = True
 
 CELERYBEAT_SCHEDULE = {
     'timer-clean-expired-data': {
-        'task': 'app.tasks.test_cron_1',
+        'task': 'my_app.tasks.test_cron_1',
         'schedule': crontab(hour=2, minute=40),
     },
     'schedule-send-api-statistics': {
-        'task': 'app.tasks.test_cron_2',
+        'task': 'my_app.tasks.test_cron_2',
         'schedule': crontab(hour=11, minute=0, day_of_week=[1, 2, 3, 4, 5]),
     },
 }
 
 CELERY_ROUTES = {
-    'app.tasks.test_delay_1': {'queue': 'app_logic'},
-    'app.tasks.test_delay_2': {'queue': 'app_simple_logic'},
+    'my_app.tasks.test_delay_1': {'queue': 'app_logic'},
+    'my_app.tasks.test_delay_2': {'queue': 'app_simple_logic'},
 
-    'app.tasks.test_cron_1': {'queue': 'cron_timer'},  # NOQA: E501
-    'app.tasks.test_cron_2': {'queue': 'cron_timer'},
+    'my_app.tasks.test_cron_1': {'queue': 'cron_timer'},  # NOQA: E501
+    'my_app.tasks.test_cron_2': {'queue': 'cron_timer'},
 }
 
 CORS_RESOURCES = {

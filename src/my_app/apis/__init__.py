@@ -1,6 +1,8 @@
 from .audit import audit_bp
+from .user import user_bp
 
 MODULES = (
-    # (auth_bp, '/api'),
-    (audit_bp, '/api')
+    (user_bp, '/api'),
+    (audit_bp, '/api'),
+
 )
