@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint
-from my_app.tasks import test_delay_1, test_delay_2
 from flask_restful import Api, Resource
 
 from my_app.foundation import csrf
@@ -14,6 +13,7 @@ audit_api = Api(audit_bp)
 class AuditsAPI(Resource):
 
     def get(self, tid):
+        from my_app.tasks import test_delay_1, test_delay_2
         if tid == 1:
             test_delay_1.delay()
         else:

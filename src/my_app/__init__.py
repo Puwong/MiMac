@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
-
 import os
 import time
-
 from flask import Flask, g, request
-from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.login import LoginManager, login_required, current_user
+from flask.ext.login import current_user
 from my_app.models import User
-from my_app.foundation import make_celery, logger, cors, csrf, db
-from my_app import apis, app
-
+from my_app.foundation import make_celery, logger, cors, csrf, db, login_manager
+from my_app import apis
 
 DEFAULT_APP_NAME = 'MiMac'
 
