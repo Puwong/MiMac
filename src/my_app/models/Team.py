@@ -1,4 +1,4 @@
-from my_app import db
+from my_app.foundation import db
 
 
 class Team(db.Model):

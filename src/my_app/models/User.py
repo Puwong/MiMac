@@ -1,4 +1,4 @@
-from my_app import db
+from my_app.foundation import db
 from flask.ext.login import UserMixin
 
 

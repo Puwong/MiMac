@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from my_app import db
+from my_app.foundation import db
 
 
 class Article(db.Model):

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 import time
 
@@ -142,8 +144,6 @@ def hello_world():
 
 app = create_app()
 celery = make_celery(app)
-login_manager = LoginManager()
-login_manager.init_app(app)
 
 if __name__ == '__main__':
     app.run()
