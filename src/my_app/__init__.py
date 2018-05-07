@@ -13,8 +13,9 @@ DEFAULT_APP_NAME = 'MiMac'
 def create_app():
     app = Flask(DEFAULT_APP_NAME)
     app.config.from_object('settings.base')
-    if os.path.exists('/opt/srv/config/local.py'):
-        app.config.from_pyfile('/opt/srv/config/local.py')
+    if os.path.exists('/Users/megvii/MiMac/src/settings/local.py'):
+        app.config.from_pyfile('/Users/megvii/MiMac/src/settings/local.py')
+        print("load local conf successd")
     configure_foundations(app)
     configure_blueprint(app, apis.MODULES)
     # configure_handlers(app)
@@ -128,16 +129,10 @@ def configure_foundations(app):
 
 
 def configure_blueprint(app, modules):
-    print modules
     for module, url_prefix in modules:
         app.register_blueprint(module, url_prefix=url_prefix)
 
 app = create_app()
 celery = make_celery(app)
 
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
 
-if __name__ == '__main__':
-    app.run()

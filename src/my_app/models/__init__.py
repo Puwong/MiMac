@@ -2,12 +2,12 @@ from .User import User
 from .Team import Team
 from .Article import Article
 from .Message import Message
-from .TeamUserRelationship import TeamUserRelationship
+from .MessageBatch import MessageBatch
 
 __all__ = [
     'User',
     'Team',
     'Article',
     'Message',
-    'TeamUserRelationship',
+    'MessageBatch',
 ]

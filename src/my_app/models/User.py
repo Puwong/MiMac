@@ -4,10 +4,11 @@ from flask.ext.login import UserMixin
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True)
-    email = db.Column(db.String(120), unique=True)
-    article = db.relationship(
-        'Article', backref=db.backref('person', lazy='joined'), lazy='dynamic')
+    username = db.Column(db.String(32), unique=True)
+    password = db.Column(db.String(32))
+    email = db.Column(db.String(128), unique=True)
+    teams = db.relationship("TeamUserRelationship", back_populates="team", lazy='dynamic')
+
 
     def __init__(self, username, email):
         self.username = username

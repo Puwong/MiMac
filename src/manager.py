@@ -12,6 +12,7 @@ migrate = Migrate(app, db)
 manager.add_command("runserver", Server('0.0.0.0', port=22232))
 manager.add_command('db', MigrateCommand)
 
+
 @manager.command
 def dropall():
     "Drops all database tables"
@@ -33,7 +34,6 @@ def resetall():
 
 
 if __name__ == "__main__":
-
     import logging
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
@@ -41,3 +41,4 @@ if __name__ == "__main__":
     ch.setLevel(logging.DEBUG)
     logger.addHandler(ch)
     manager.run()
+

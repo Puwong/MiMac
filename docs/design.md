@@ -10,22 +10,8 @@
 - Logout
 - FindPassword
 - OAuth2 (op)
-#### MySQL
-- username
-- password
-- uid
-  - 顺次增加
-  - 和当天的日期一起加盐md5编码，生成当日有效的邀请码
-- father_uid
-- email
-- tel
-- data
-#### tmpData
-- token
-- 
 ### 组织
-#### MySQL
-- id
+
 ### 文件
 - 图片文件
 - 标注文件
