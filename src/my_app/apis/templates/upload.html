@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a href={{url_for('frontend.landing')}}>首页</a>
+<form action={{url_for('File.files')}} method="post" enctype="multipart/form-data">
+        <div style="display:none;"><input id="csrf_token" name="csrf_token" type="hidden" value="1505356307##188b692c302189c4baafd797303871cd24952820"></div>
+        <input type="file" name="file" />
+        <input type="submit" value="上传文件" />
+    </form>
+</body>
+</html>

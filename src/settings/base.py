@@ -5,6 +5,8 @@ from celery.schedules import crontab
 
 PROJECT_DIR = "/Users/megvii/MiMac"
 
+SECRET_KEY = 'mimac_default'
+
 CSRF_ENABLED = True
 WTF_CSRF_TIME_LIMIT = 3600 * 48
 
@@ -26,6 +28,10 @@ LOGGER_NORMAL = "logger_normal.log"
 LOGGER_ERROR = "logger_error.log"
 LOGGER_DEBUG = "logger_debug.log"
 
+UPLOAD_FOLDER = PROJECT_DIR + '/file'
+ALLOWED_EXTENSIONS = set(['dicm', 'png', 'jpg', 'jpeg', 'gif', 'log', 'json'])
+
+TRAIN_DIR = PROJECT_DIR + 'data'
 
 CELERY_TIMEZONE = 'Asia/Shanghai'
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://127.0.0.1:6379/3')

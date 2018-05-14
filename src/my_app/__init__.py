@@ -9,7 +9,6 @@ from my_app import apis
 
 DEFAULT_APP_NAME = 'MiMac'
 
-
 def create_app():
     app = Flask(DEFAULT_APP_NAME)
     app.config.from_object('settings.base')
@@ -131,6 +130,11 @@ def configure_foundations(app):
 def configure_blueprint(app, modules):
     for module, url_prefix in modules:
         app.register_blueprint(module, url_prefix=url_prefix)
+
+
+def app_conf(conf):
+    return app.config[conf]
+
 
 app = create_app()
 celery = make_celery(app)

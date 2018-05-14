@@ -7,9 +7,14 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(32), unique=True)
     password = db.Column(db.String(32))
     email = db.Column(db.String(128), unique=True)
-    teams = db.relationship("TeamUserRelationship", back_populates="team", lazy='dynamic')
 
+    delete = db.Column(db.Boolean, nullable=False, default=False)
+    pending = db.Column(db.Boolean, nullable=False, default=False)
 
-    def __init__(self, username, email):
-        self.username = username
-        self.email = email
+    teams = db.relationship("TeamUserRelationship", back_populates="user", lazy='dynamic')
+    files = db.relationship("FileUserRelationship", back_populates="user", lazy='dynamic')
+
+    def check_password(self, raw):
+        if not self.password:
+            return False
+        return raw == self.password

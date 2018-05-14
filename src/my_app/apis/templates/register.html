@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+    <meta name="csrf-token" content="1505356307##188b692c302189c4baafd797303871cd24952820">
+    <title>Title</title>
+</head>
+<body>
+<a href={{url_for('frontend.landing')}}>首页</a>
+            {% if can_register %}
+    <!--name-input pwd-input-->
+    <div class="register-area">
+        <form method="post" action={{url_for('Auth.auth-register')}}>
+            <div class="form-group">
+                <label for="name-input" class="control-label" style="padding-top: 5px;vertical-align: top;margin-left: -4px;">用户名</label>
+                <div class="content-input" style="vertical-align: bottom;">
+                    <input type="text" name="username" class="form-control" placeholder="Username">
+                    <div class="content-tip" id="username-tip"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="pwd-input" class="control-label">密码</label>
+                <div class="content-input">
+                    <input type="password" class="form-control" name="password" placeholder="Password">
+                    <div class="content-tip" id="password-tip"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email-input" class="control-label">邮箱</label>
+                <div class="content-input">
+                    <input type="email" class="form-control" value="" name="email" placeholder="Email">
+                    <div class="content-tip" id="email-tip"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="content-input">
+                    <input class="btn btn-primary btn-commit" type="submit" data-action="submit" value="提交注册申请"/>
+                </div>
+            </div>
+
+        </form>
+        {% else %}
+        <div class="text-center">
+            <h3>现在不能注册，请联系管理员</h3>
+        </div>
+        {% endif %}
+</body>
+</html>

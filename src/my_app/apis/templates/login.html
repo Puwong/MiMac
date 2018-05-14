@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+    <meta name="csrf-token" content="1505356307##188b692c302189c4baafd797303871cd24952820">
+    <title>Title</title>
+</head>
+<body>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                <p class="success">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+<a href={{url_for('frontend.landing')}}>首页</a>
+            <form class="text-center form-horizontal custom-form login-form" method="post">
+                <div style="display:none;"><input id="csrf_token" name="csrf_token" type="hidden" value="1505356307##188b692c302189c4baafd797303871cd24952820"></div>
+                <div class="form-group">
+                     {{ form.username.label(class="control-label") }}
+                    <div class="content-input">
+                        {{ form.username() }}
+                    </div>
+                </div>
+                <div class="form-group">
+                     {{ form.password.label(class="control-label") }}
+                    <div class="content-input">
+                        {{ form.password() }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <span >{{ form.remember_me(class="check-input", style="width:20px;margin-left:42px;") }}</span>
+                    {{ form.remember_me.label }}
+                </div>
+
+                <div class="form-group">
+                    <span class="register-link"><a href={{url_for('Auth.auth-register')}}>新用户注册</a></span>
+                    <p class="register-btn">
+                        {{ form.submit(class="btn btn-primary btn-commit btn-block") }}
+                    </p>
+                </div>
+
+            </form>
+</body>
+</html>
