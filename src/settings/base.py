@@ -29,6 +29,8 @@ LOGGER_ERROR = "logger_error.log"
 LOGGER_DEBUG = "logger_debug.log"
 
 UPLOAD_FOLDER = PROJECT_DIR + '/file'
+USER_DIR = UPLOAD_FOLDER
+
 ALLOWED_EXTENSIONS = set(['dicm', 'png', 'jpg', 'jpeg', 'gif', 'log', 'json'])
 
 TRAIN_DIR = PROJECT_DIR + 'data'

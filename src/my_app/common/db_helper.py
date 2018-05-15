@@ -1,6 +1,7 @@
 #! encoding=utf-8
-from my_app.foundation import db
 import math
+import os
+from my_app.foundation import db
 
 
 def count_where(*filters):
@@ -50,3 +51,14 @@ def allowed_file(filename):
     from my_app import app_conf
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in app_conf('ALLOWED_EXTENSIONS')
+
+
+def remove_dir_loop(my_dir):
+    if os.path.isdir(my_dir):
+        for p in os.listdir(my_dir):
+            remove_dir_loop(os.path.join(my_dir, p))
+        if os.path.exists(my_dir):
+            os.rmdir(my_dir)
+    else:
+        if os.path.exists(my_dir):
+            os.remove(my_dir)

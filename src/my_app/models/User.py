@@ -6,7 +6,7 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(32), unique=True)
     password = db.Column(db.String(32))
-    email = db.Column(db.String(128), unique=True)
+    email = db.Column(db.String(128))
 
     delete = db.Column(db.Boolean, nullable=False, default=False)
     pending = db.Column(db.Boolean, nullable=False, default=False)

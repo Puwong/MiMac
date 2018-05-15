@@ -76,9 +76,9 @@ register_page_parser = reqparse.RequestParser()
 register_page_parser.add_argument('code', type=unicode, required=False, location='args') # NOQA
 
 register_parser = query_parser.copy()
-register_parser.add_argument('username', type=unicode, required=True, location='args')  # NOQA
-register_parser.add_argument('password', type=unicode, required=True, location='args')  # NOQA
-register_parser.add_argument('email', type=unicode, required=True, location='args')  # NOQA
+register_parser.add_argument('username', type=unicode, required=True, location='form')  # NOQA
+register_parser.add_argument('password', type=unicode, required=True, location='form')  # NOQA
+register_parser.add_argument('email', type=unicode, required=True, location='form')  # NOQA
 
 
 class RegisterAPI(Resource):
@@ -90,10 +90,11 @@ class RegisterAPI(Resource):
         ))
 
     def post(self):
-        args = register_page_parser.parse_args()
+        args = register_parser.parse_args()
         username = args.get('username')
         password = args.get('password')
         email = args.get('email')
+        print username
         if exists_query(User.query.filter_by(username=username)):
             return "ERROR_DUPLICATE_USER_NAME"
         user = User(
@@ -105,8 +106,9 @@ class RegisterAPI(Resource):
         db.session.add(user)
         db.session.commit()
         new_user = UserService().get_user_by_name(username)
+        UserService().add_user_dir(new_user.id)
         login_user(new_user, remember=False)
-        return redirect(url_for('Test.test'))
+        return redirect(url_for('Auth.auth-login'))
 
 
 auth_api.add_resource(
