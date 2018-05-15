@@ -74,8 +74,10 @@ def train_top_model():
     return model
 
 
-#save_bottlebeck_features()
-#model = train_top_model()
+save_bottlebeck_features()
+model = train_top_model()
+
+
 train_data = np.load(open('bottleneck_features_train.npy','rb'))
 model = Sequential()
 model.add(Flatten(input_shape=train_data.shape[1:]))

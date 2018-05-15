@@ -33,6 +33,20 @@ class FileType(Constants):
         FILE_AVATAR: u'头像文件'
     }
 
+
+class FileState(Constants):
+    NORMAL = 1
+    FREEZE = 2
+    STUCK = 3
+    DELETE = 4
+
+    _state_mapping = {
+        NORMAL: u'正常',
+        FREEZE: u'已冻结',  # 被用户冻结，冻结后其他人不能查看文件
+        STUCK: u'被占用',  # 被系统占用，比如正在预标注，在这种情况下用户可以查看不能操作文件
+        DELETE: u'已删除',  # 用户删除文件，任何人不能查看文件
+    }
+
 FLASH_MESSAGES = {
     'wrong_password': u'密码错误',
     'cannot_unregister_root': u'你一个root用户删除个毛线啊',
