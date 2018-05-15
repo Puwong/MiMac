@@ -25,8 +25,8 @@
     - 二分类--狗die (doing)
     ...
   - 上传 (done)
-  - 更新db，放入文件，关联用户 （文件处于系统占用状态）(todo)
-  - 在该用户的文件夹下放置文件，uri为file_id.[type]  (todo)
+  - 更新db，放入文件，关联用户 （文件处于系统占用状态）(done)
+  - 在该用户的文件夹下放置文件，uri为file_id.[type]  (done)
   - 为文件添加标注文件，uri为file_id.label（本质是json） (todo)
   - 异步任务开始进行预标注（这里有两种实现策略） (doing)
     - 一个是本地跑 (doing)
