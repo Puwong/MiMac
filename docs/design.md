@@ -2,15 +2,15 @@
 - doing  正在做的，太蠢了所以到现在还没做完
 - done  已经完成的bug（bug里面藏代码说的就是我）
 - todo 必须做的，完成所有的todo立马开始做
-- pending  不重要或者有代替方案完成所有的todo，就去做
+- pending  不重要或者有代替方案，完成所有的todo，就去做
 - abandon  没空做啦QAQ，完成所有的pending就去做
 
 ## 后端
 
-### 用户 
-- Register (doing)
+### 用户 (done)
+- Register (done)
   - 创建用户 (done) 
-  - 创建用户文件夹 (todo)
+  - 创建用户文件夹 (done)
 - Login (done)
 - Logout (done)
 - FindPassword (abandon)
@@ -18,7 +18,7 @@
 
 ### 组织(pending)
 
-### 文件 
+### 文件 (doing)
 - 上传图片 (doing)
   - 选择文件所属的任务类型 (todo)
     - 二分类--有猫病 (doing)
