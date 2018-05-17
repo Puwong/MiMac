@@ -6,11 +6,3 @@ from .ImageUserRelationship import ImageUserRelationship
 from .Article import Article
 from .Message import Message
 from .MessageBatch import MessageBatch
-
-__all__ = [
-    'User',
-    'Team',
-    'Article',
-    'Message',
-    'MessageBatch',
-]

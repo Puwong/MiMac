@@ -6,7 +6,7 @@ from my_app import app, app_conf
 from my_app.foundation import db
 from my_app.models import User, Team, TeamUserRelationship
 from my_app.service import UserService
-from my_app.common.db_helper import remove_dir_loop
+from my_app.common.tools import remove_dir_loop
 
 
 manager = Manager(app)

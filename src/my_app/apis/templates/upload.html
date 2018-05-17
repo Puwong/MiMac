@@ -7,7 +7,13 @@
 <body>
 <a href={{url_for('frontend.landing')}}>首页</a><br>
 <div>{{result}}</div>
-<form action={{url_for('Image.images')}} method="post" enctype="multipart/form-data">
+请选择要上传的图像的所属类型：
+<select name="imagealglist" form="imageform">
+    {% for alg in algs %}
+   <option value="{{alg['code']}}">{{alg['desc']}}</option>
+   {% endfor %}
+</select>
+<form action={{url_for('Image.upload')}} method="post" enctype="multipart/form-data", id="imageform">
         <div style="display:none;"><input id="csrf_token" name="csrf_token" type="hidden" value="1505356307##188b692c302189c4baafd797303871cd24952820"></div>
         <input type="file" name="file" />
         <input type="submit" value="上传文件" />

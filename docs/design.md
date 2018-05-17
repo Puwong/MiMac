@@ -19,15 +19,43 @@
 ### 组织(pending)
 
 ### 文件 (doing)
+```text
+这里对于label文件特别说明一下，它和用什么预测算法应该是没有关系的，只和图片和图片所属的任务类型有关
+结构应该是：
+{
+    'type':1001,
+    'data':{
+        'key':{
+            0:'cat',
+            1:'dog',
+        },
+        'value':0.2,
+    }
+}
+type的取值范围在my_app.common.constant.ImageType
+data里面的值通常是各种预定义和当前的值，比如这是一个有猫病的二分类，二分类还有另一种写法，见下
+{
+    'type':1001,
+    'data':{
+        'key':['cat', 'dog'],
+        'weight':[0.2, 0.78],
+        'value':1
+    }
+}
+这里的 value 保存的是下标，从0开始计数
+统一规定，这种写法属于多分类中分类数k = 2的情况
+```
 - 上传图片 (doing)
-  - 选择文件所属的任务类型 (todo)
-    - 二分类--有猫病 (doing)
-    - 二分类--狗die (doing)
+  - 选择文件所属的任务类型 (done)
+    - 基类 (done)
+    - 二分类 (done)
+    - 二分类--有猫病 (done)
+    - 多分类 (done)
     ...
   - 上传 (done)
   - 更新db，放入图像，关联用户，获得图像ID （文件处于待标注状态）(done)
   - 在该用户的文件夹下放置文件，uri为image_id.[type]  (done)
-  - 为文件添加标注文件，uri为image_id.label（本质是json） (doing)
+  - 为文件添加标注文件，uri为image_id.label（本质是json） (done)
   - 异步任务开始进行预标注（这里有两种实现策略） (doing)
     - 一个是本地跑 (doing)
       - 前提是单张图片本地预标注的时间控制在1分钟内 (doing)
@@ -37,8 +65,8 @@
       - 做完后访问一个本地的端口，告知成功
         - 本地需要新增一个API
       - 本地API被访问后，db里更新图像状态为 NORMAL
-- 展示 (todo)
-  - 图片压缩 (todo)
+- 展示 (doing)
+  - 图片压缩 (done)
   - 下载 (doing)
 - 下载 (doing)
 - 删除 (todo)
@@ -69,9 +97,13 @@
 ### 算法 (doing)
 - 算法
   - classification (doing)
-    - 二分类 (doing)
+    - 二分类 (done)
       - VGG/rest-net
-      - 可配置类型的名称，使用的算法，模型的uri，训练间隔
+      - 可配置 (pending)
+        - 类型的名称，(done)
+        - 使用的算法，(pending)
+        - 模型的uri，(done)
+        - 训练间隔, (todo)
     - 多分类 (pending)
   - detection (pending)
     - 病灶识别

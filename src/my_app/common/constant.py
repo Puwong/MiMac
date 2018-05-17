@@ -25,13 +25,32 @@ class LoginState(Constants):
 class ImageState(Constants):
     NULL = 1
     WAIT_LABEL = 2
-    DONE_LABEL = 3
+    LABELING = 3
+    DONE_LABEL = 4
 
     _state_mapping = {
         NULL: u'其他',
-        DONE_LABEL: u'标注完成',
         WAIT_LABEL: u'等待标注',
+        LABELING: u'正在标注',
+        DONE_LABEL: u'标注完成',
     }
+
+
+class ImageAlgorithm(Constants):
+    Base = 0
+    BiClass = 1101
+    BiClassCatDog = 1102
+    MulClass = 1201
+    # 提示一下，添加算法的时候也要更新 algorithm 的 __init__.py
+    _state_mapping = {
+        Base: u'基础算法',
+        BiClass: u'二分类',
+        BiClassCatDog: u'有猫病诊断',
+        MulClass: u'多分类',
+    }
+
+    AlgList = [{'code': key, 'desc': _state_mapping[key]} for key in _state_mapping]
+
 
 FLASH_MESSAGES = {
     'wrong_password': u'密码错误',

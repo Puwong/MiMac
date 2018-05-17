@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from my_app.foundation import db
-from my_app.common.constant import ImageState
+from my_app.common.constant import ImageState, ImageAlgorithm
 
 
 class Image(db.Model):
@@ -9,6 +9,7 @@ class Image(db.Model):
     title = db.Column(db.String(128))
     uri = db.Column(db.String(128))
     state = db.Column(db.SmallInteger, default=ImageState.WAIT_LABEL)
+    alg = db.Column(db.SmallInteger, default=ImageAlgorithm.Base)
     freeze = db.Column(db.Boolean, default=False)
     delete = db.Column(db.Boolean, default=False)
     users = db.relationship("ImageUserRelationship", back_populates="image", lazy='dynamic')
