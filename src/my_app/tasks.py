@@ -11,6 +11,9 @@ def test_delay_1():
 def test_delay_2():
     print("test_delay_2 called {}".format(now2log()))
 
+@celery.task
+def predict():
+    pass
 
 @celery.task
 def test_cron_1():

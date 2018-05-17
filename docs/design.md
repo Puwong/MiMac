@@ -25,9 +25,9 @@
     - 二分类--狗die (doing)
     ...
   - 上传 (done)
-  - 更新db，放入文件，关联用户 （文件处于系统占用状态）(done)
-  - 在该用户的文件夹下放置文件，uri为file_id.[type]  (done)
-  - 为文件添加标注文件，uri为file_id.label（本质是json） (todo)
+  - 更新db，放入图像，关联用户，获得图像ID （文件处于待标注状态）(done)
+  - 在该用户的文件夹下放置文件，uri为image_id.[type]  (done)
+  - 为文件添加标注文件，uri为image_id.label（本质是json） (doing)
   - 异步任务开始进行预标注（这里有两种实现策略） (doing)
     - 一个是本地跑 (doing)
       - 前提是单张图片本地预标注的时间控制在1分钟内 (doing)

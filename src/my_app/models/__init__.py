@@ -1,6 +1,6 @@
 from .User import User
 from .Team import Team
-from .File import File
+from .Image import Image
 from .TeamUserRelationship import TeamUserRelationship
 from .FileUserRelationship import FileUserRelationship
 from .Article import Article

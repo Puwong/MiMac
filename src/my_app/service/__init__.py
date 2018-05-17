@@ -1,5 +1,5 @@
 from .UserService import UserService
-from .FileService import FileService
+from .ImageService import ImageService
 
 
 
