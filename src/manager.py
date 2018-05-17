@@ -23,7 +23,7 @@ def _add_root():
     root_user.teams.append(tr)
     db.session.add(root_user)
     db.session.commit()
-    UserService().add_user_dir(root_user.id)
+    UserService(db).add_user_dir(root_user.id)
 
 @manager.command
 def dropall():

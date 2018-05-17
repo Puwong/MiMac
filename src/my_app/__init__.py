@@ -112,7 +112,6 @@ def configure_foundations(app):
     """
     @app.before_request
     def before_request():
-        g.user = current_user
         g.user_id = current_user.id if hasattr(current_user, 'id') else None
         now = int(time.time())
         g.TIMESTAMP = now

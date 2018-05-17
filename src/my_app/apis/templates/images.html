@@ -7,5 +7,10 @@
 <body>
     <a href={{url_for('frontend.landing')}}>首页</a><br>
     <a href={{url_for('Image.upload')}}>上传</a><br>
+    {% for image in images %}
+    <a href={{url_for('Image.image',image_id=image.image.id)}}  target=_blank>
+        <img src={{url_for('Image.show',image_id=image.image.id)}}  alt="{{image.image.id}}"/><br>
+    </a>
+    {% endfor %}
 </body>
 </html>

@@ -48,7 +48,7 @@ class LoginAPI(Resource):
         password = self.form.password.data
         remember = self.form.remember_me.data
         next_url = self.args.next
-        user, message = UserService().check_user_passwd(username, password)
+        user, message = UserService(db).check_user_passwd(username, password)
         if user is None:
             flash(message, 'danger')
             return redirect(url_for('Auth.auth-login'))
@@ -58,17 +58,6 @@ class LoginAPI(Resource):
         )
         #resp.set_cookie('status', LoginState.STATE_ONLINE)
         return resp
-
-
-class StaticFilesAPI(Resource):
-    def get(self, filename):
-        from flask import current_app, send_from_directory
-        if filename.endswith('.html'):
-            abort(404)
-        return send_from_directory(
-            os.path.join(current_app.root_path, 'templates/'),
-            filename
-        )
 
 
 register_page_parser = reqparse.RequestParser()
@@ -104,17 +93,12 @@ class RegisterAPI(Resource):
         )
         db.session.add(user)
         db.session.commit()
-        new_user = UserService().get_user_by_name(username)
-        UserService().add_user_dir(new_user.id)
+        new_user = UserService(db).get_user_by_name(username)
+        UserService(db).add_user_dir(new_user.id)
         login_user(new_user, remember=False)
         return redirect(url_for('Auth.auth-login'))
 
 
-auth_api.add_resource(
-    StaticFilesAPI,
-    '/auth/<path:filename>',
-    endpoint='auth-static-files'
-)
 auth_api.add_resource(
     LoginAPI,
     '/auth/login',

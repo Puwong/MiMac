@@ -1,28 +1,21 @@
 # -*- coding: utf-8 -*-
 import os
 from flask import current_app
+from .BaseService import BaseService
 from my_app.models import User
 from my_app.common.constant import FLASH_MESSAGES
 
 
-class UserService(object):
+class UserService(BaseService):
+    model = User
+
     @staticmethod
     def add_user_dir(uid):
         from my_app import app_conf
         return os.mkdir(os.path.join(app_conf('USER_DIR'), str(uid)))
 
-    def get_user(self, user_id):
-        return User.query.get(user_id)
-
-    def get(self, id_or_instance):
-        if isinstance(id_or_instance, User):
-            user = id_or_instance
-        else:
-            user = self.get_user(id_or_instance)
-        return user
-
     def get_user_by_name(self, username):
-        return User.query.filter_by(username=username).first()
+        return super(UserService, self).get_by(username=username)
 
     def check_user_passwd(self, username, password):
         user = self.get_user_by_name(username)

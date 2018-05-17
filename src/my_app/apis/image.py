@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, current_app, flash, g
+from flask import Blueprint, request, render_template, current_app, flash, g, send_file
 from flask_restful import Api, Resource
 #from werkzeug.utils import secure_filename
 from my_app.foundation import csrf, db
@@ -11,15 +11,32 @@ csrf.exempt(image_bp)
 image_api = Api(image_bp)
 
 
+class ShowAPI(Resource):
+
+    def get(self, image_id):
+        image = ImageService(db).get(image_id)
+        return send_file(image.uri)
+
+
 class ImageAPI(Resource):
-    def patch(self):
+
+    def get(self, image_id):
+        image = ImageService(db).get(image_id)
+        return send_file(image.uri)
+
+    def patch(self, image_id):
         pass
 
 
 class ImagesAPI(Resource):
     def get(self):
+        user = UserService(db).get(g.user_id)
+        images = user.images
+        for image in images:
+            print image.image
         return current_app.make_response(render_template(
-            'images.html'
+            'images.html',
+            images=images
         ))
 
 
@@ -39,8 +56,6 @@ class ImageUploadAPI(Resource):
                 result='ERROR! file not found',
                 algs=ImageAlgorithm.AlgList
             ))
-        print
-
         file = request.files['file']
         # if user does not select file, browser also
         # submit a empty part without filename
@@ -52,7 +67,7 @@ class ImageUploadAPI(Resource):
                 algs=ImageAlgorithm.AlgList
             ))
         if file and allowed_file(file.filename):
-            owner = UserService().get(g.user_id)
+            owner = UserService(db).get(g.user_id)
             fr = ImageUserRelationship(isOwner=True)
             fr.image = Image(title=file.filename, alg=request.form['imagealglist'])
             owner.images.append(fr)
@@ -68,15 +83,21 @@ class ImageUploadAPI(Resource):
                 algs=ImageAlgorithm.AlgList
             ))
 
+
 image_api.add_resource(
     ImageAPI,
-    '/image/<int:id>',
+    '/image/<int:image_id>',
     endpoint='image'
 )
 image_api.add_resource(
     ImagesAPI,
     '/image',
     endpoint='images'
+)
+image_api.add_resource(
+    ShowAPI,
+    '/show/<int:image_id>',
+    endpoint='show'
 )
 image_api.add_resource(
     ImageUploadAPI,
