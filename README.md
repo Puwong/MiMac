@@ -1,7 +1,7 @@
 # MiMac
 Medical Image Management&amp;Assistant Center
 
-医学影响管理辅助中心
+医学影像管理辅助中心
 
 ## 序
 

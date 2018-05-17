@@ -20,10 +20,10 @@
 
 ### 文件 (doing)
 ```text
-这里对于label文件特别说明一下，它和用什么预测算法应该是没有关系的，只和图片和图片所属的任务类型有关
+这里对于label文件特别说明一下，它和用什么网络(VGG/CNN/restnet)应该是没有关系的，只和图片和图片所属的任务类型有关
 结构应该是：
 {
-    'type':1001,
+    'alg':1001,
     'data':{
         'key':{
             0:'cat',
@@ -32,10 +32,10 @@
         'value':0.2,
     }
 }
-type的取值范围在my_app.common.constant.ImageType
+alg的取值范围在my_app.common.constant.ImageAlgorithm
 data里面的值通常是各种预定义和当前的值，比如这是一个有猫病的二分类，二分类还有另一种写法，见下
 {
-    'type':1001,
+    'alg':1001,
     'data':{
         'key':['cat', 'dog'],
         'weight':[0.2, 0.78],
