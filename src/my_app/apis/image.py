@@ -1,18 +1,18 @@
 import os
 from flask import Blueprint, request, render_template, current_app, redirect, url_for, flash, g
 from flask_restful import Api, Resource
-from werkzeug.utils import secure_filename
+#from werkzeug.utils import secure_filename
 from my_app.foundation import csrf, db
 from my_app.common.db_helper import allowed_file
 from my_app.service import UserService
-from my_app.models import File, FileUserRelationship
+from my_app.models import Image, ImageUserRelationship
 
-file_bp = Blueprint('File', __name__)
-csrf.exempt(file_bp)
-file_api = Api(file_bp)
+image_bp = Blueprint('Image', __name__)
+csrf.exempt(image_bp)
+image_api = Api(image_bp)
 
 
-class FilesAPI(Resource):
+class ImagesAPI(Resource):
     def get(self):
         return current_app.make_response(render_template(
             'upload.html'
@@ -37,22 +37,22 @@ class FilesAPI(Resource):
             ))
         if file and allowed_file(file.filename):
             owner = UserService().get(g.user_id)
-            fr = FileUserRelationship(isOwner=True)
-            fr.file = File(title=file.filename)
-            owner.files.append(fr)
+            fr = ImageUserRelationship(isOwner=True)
+            fr.image = Image(title=file.filename)
+            owner.images.append(fr)
             db.session.add(owner)
             db.session.commit()
-            file.save(os.path.join(app_conf('USER_DIR'), str(g.user_id), str(fr.file.id)))
+            file.save(os.path.join(app_conf('USER_DIR'), str(g.user_id), str(fr.image.id)))
             return current_app.make_response(render_template(
                 'upload.html',
                 result='Upload success'
             ))
 
 
-file_api.add_resource(
-    FilesAPI,
-    '/files',
-    endpoint='files'
+image_api.add_resource(
+    ImagesAPI,
+    '/images',
+    endpoint='images'
 )
 
 

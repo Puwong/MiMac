@@ -20,7 +20,7 @@ auth_api = Api(auth_bp)
 
 login_parser = query_parser.copy()
 login_parser.add_argument('next', type=unicode, required=False, location='args')  # NOQA
-FRONTEND_ = "/api/files"
+
 
 class LoginAPI(Resource):
     def __init__(self):
@@ -30,9 +30,8 @@ class LoginAPI(Resource):
     def get(self):
         if g.user and g.user.is_authenticated():
             resp = current_app.make_response(
-                redirect(FRONTEND_)
+                redirect(url_for('Image.images'))
             )
-            resp.set_cookie('status', LoginState.STATE_ONLINE)
             return resp
         elif 'uid' in session and 'uname' in session:
             session.pop('uid')
@@ -55,7 +54,7 @@ class LoginAPI(Resource):
             return redirect(url_for('Auth.auth-login'))
         login_user(user, remember=remember)
         resp = current_app.make_response(
-            redirect(next_url or FRONTEND_)
+            redirect(url_for('Image.images'))
         )
         #resp.set_cookie('status', LoginState.STATE_ONLINE)
         return resp
@@ -67,7 +66,7 @@ class StaticFilesAPI(Resource):
         if filename.endswith('.html'):
             abort(404)
         return send_from_directory(
-            os.path.join(current_app.root_path, 'templates/page_'),
+            os.path.join(current_app.root_path, 'templates/'),
             filename
         )
 

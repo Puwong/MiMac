@@ -2,7 +2,7 @@ from .audit import audit_bp
 from .auth import auth_bp, frontend
 from .user import user_bp
 from .base import test_bp
-from .file import file_bp
+from .image import image_bp
 
 MODULES = (
     (user_bp, '/api'),
@@ -10,5 +10,5 @@ MODULES = (
     (test_bp, ''),
     (auth_bp, ''),
     (frontend, ''),
-    (file_bp, '/api'),
+    (image_bp, '/api'),
 )

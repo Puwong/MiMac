@@ -12,7 +12,7 @@ class User(db.Model, UserMixin):
     pending = db.Column(db.Boolean, nullable=False, default=False)
 
     teams = db.relationship("TeamUserRelationship", back_populates="user", lazy='dynamic')
-    files = db.relationship("FileUserRelationship", back_populates="user", lazy='dynamic')
+    images = db.relationship("ImageUserRelationship", back_populates="user", lazy='dynamic')
 
     def check_password(self, raw):
         if not self.password:
