@@ -7,13 +7,9 @@
     <title>Title</title>
 </head>
 <body>
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                <p class="success">{{ message }}</p>
-                {% endfor %}
-            {% endif %}
-            {% endwith %}
+{% if g.user_id %}
+你好，亲爱的第 {{g.user_id}} 位注册用户<br>
+{% endif %}
 <a href={{url_for('frontend.landing')}}>首页</a>
             <form class="text-center form-horizontal custom-form login-form" method="post">
                 <div style="display:none;"><input id="csrf_token" name="csrf_token" type="hidden" value="1505356307##188b692c302189c4baafd797303871cd24952820"></div>
@@ -36,7 +32,7 @@
                 </div>
 
                 <div class="form-group">
-                    <span class="register-link"><a href={{url_for('Auth.auth-register')}}>新用户注册</a></span>
+                    <span class="register-link"><a href={{url_for('Auth.register')}}>新用户注册</a></span>
                     <p class="register-btn">
                         {{ form.submit(class="btn btn-primary btn-commit btn-block") }}
                     </p>

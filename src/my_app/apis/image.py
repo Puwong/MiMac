@@ -1,6 +1,6 @@
-from flask import Blueprint, request, render_template, current_app, flash, g, send_file
+from flask import Blueprint, request, render_template, current_app, flash, g, send_file, redirect, url_for
 from flask_restful import Api, Resource
-#from werkzeug.utils import secure_filename
+from werkzeug.utils import secure_filename
 from my_app.foundation import csrf, db
 from my_app.service import UserService, ImageService
 from my_app.models import Image, ImageUserRelationship
@@ -11,18 +11,57 @@ csrf.exempt(image_bp)
 image_api = Api(image_bp)
 
 
-class ShowAPI(Resource):
+def permission_check(image_id):
+    iur = ImageUserRelationship.query.filter_by(user_id=g.user_id, image_id=image_id).all()
+    image = ImageService(db).get(id)
+    return len(iur) and not image.delete
+
+
+class ImageShowAPI(Resource):
 
     def get(self, image_id):
+        if not permission_check(image_id):
+            return "Permission Deny !"
         image = ImageService(db).get(image_id)
-        return send_file(image.uri)
+        return send_file(image.uri, attachment_filename=image.title)
+
+
+class ImageEditAPI(Resource):
+
+    def get(self, action, image_id):
+        if not permission_check(image_id):
+            return "Permission Deny !"
+        image = ImageService(db).get(image_id)
+        if action == 'freeze':
+            image.freeze = True
+        elif action == 'unfreeze':
+            image.freeze = False
+        elif action == 'delete':
+            image.delete = True
+            return current_app.make_response(redirect(url_for('Image.images')))
+        db.session.commit()
+        if action == 'label':
+            return current_app.make_response(render_template(
+                'label.html',
+                image=image
+            ))
+        else:
+            return current_app.make_response(render_template(
+                'image.html',
+                image=image
+            ))
 
 
 class ImageAPI(Resource):
 
     def get(self, image_id):
+        if not permission_check(image_id):
+            return "Permission Deny !"
         image = ImageService(db).get(image_id)
-        return send_file(image.uri)
+        return current_app.make_response(render_template(
+            'image.html',
+            image=image
+        ))
 
     def patch(self, image_id):
         pass
@@ -32,8 +71,6 @@ class ImagesAPI(Resource):
     def get(self):
         user = UserService(db).get(g.user_id)
         images = user.images
-        for image in images:
-            print image.image
         return current_app.make_response(render_template(
             'images.html',
             images=images
@@ -69,7 +106,7 @@ class ImageUploadAPI(Resource):
         if file and allowed_file(file.filename):
             owner = UserService(db).get(g.user_id)
             fr = ImageUserRelationship(isOwner=True)
-            fr.image = Image(title=file.filename, alg=request.form['imagealglist'])
+            fr.image = Image(title=secure_filename(file.filename), alg=request.form['imagealglist'])
             owner.images.append(fr)
             db.session.add(owner)
             db.session.commit()
@@ -95,8 +132,8 @@ image_api.add_resource(
     endpoint='images'
 )
 image_api.add_resource(
-    ShowAPI,
-    '/show/<int:image_id>',
+    ImageShowAPI,
+    '/image/show/<int:image_id>',
     endpoint='show'
 )
 image_api.add_resource(
@@ -104,6 +141,9 @@ image_api.add_resource(
     '/image/upload',
     endpoint='upload'
 )
-
-
+image_api.add_resource(
+    ImageEditAPI,
+    '/image/edit/<string:action>/<int:image_id>',
+    endpoint='edit'
+)
 

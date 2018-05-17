@@ -15,7 +15,7 @@ class UserService(BaseService):
         return os.mkdir(os.path.join(app_conf('USER_DIR'), str(uid)))
 
     def get_user_by_name(self, username):
-        return super(UserService, self).get_by(username=username)
+        return super(UserService, self).get(username=username)
 
     def check_user_passwd(self, username, password):
         user = self.get_user_by_name(username)

@@ -7,11 +7,14 @@
     <title>Title</title>
 </head>
 <body>
-<a href={{url_for('frontend.landing')}}>首页</a>
+{% if g.user_id %}
+你好，亲爱的第 {{g.user_id}} 位注册用户<br>
+{% endif %}
+<a href={{url_for('frontend.landing')}}>首页</a><br>
             {% if can_register %}
     <!--name-input pwd-input-->
     <div class="register-area">
-        <form method="post" action={{url_for('Auth.auth-register')}}>
+        <form method="post" action={{url_for('Auth.register')}}>
             <div class="form-group">
                 <label for="name-input" class="control-label" style="padding-top: 5px;vertical-align: top;margin-left: -4px;">用户名</label>
                 <div class="content-input" style="vertical-align: bottom;">

@@ -5,7 +5,10 @@
     <title>Title</title>
 </head>
 <body>
-<a href={{url_for('Auth.auth-login')}}>登录</a>
-<a href={{url_for('Auth.auth-register')}}>注册</a>
+{% if g.user_id %}
+你好，亲爱的第 {{g.user_id}} 位注册用户<br>
+{% endif %}
+<a href={{url_for('Auth.login')}}>登录</a>
+<a href={{url_for('Auth.register')}}>注册</a>
 </body>
 </html>

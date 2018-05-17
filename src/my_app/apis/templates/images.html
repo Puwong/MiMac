@@ -5,12 +5,20 @@
     <title>Title</title>
 </head>
 <body>
-    <a href={{url_for('frontend.landing')}}>首页</a><br>
+{% if g.user_id %}
+你好，亲爱的第 {{g.user_id}} 位注册用户<br>
+{% endif %}
+    <a href={{url_for('frontend.landing')}}>首页</a>
+    <a href={{url_for('Auth.logout')}}>登出</a><br>
     <a href={{url_for('Image.upload')}}>上传</a><br>
     {% for image in images %}
+    {% if not image.image.delete %}
     <a href={{url_for('Image.image',image_id=image.image.id)}}  target=_blank>
         <img src={{url_for('Image.show',image_id=image.image.id)}}  alt="{{image.image.id}}"/><br>
+        <p>{{image.image.title}}</p>
     </a>
+    <hr>
+    {% endif %}
     {% endfor %}
 </body>
 </html>

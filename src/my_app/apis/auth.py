@@ -28,7 +28,8 @@ class LoginAPI(Resource):
         self.args = login_parser.parse_args()
 
     def get(self):
-        if g.user and g.user.is_authenticated():
+        user = UserService(db).get(g.user_id)
+        if user and user.is_authenticated():
             resp = current_app.make_response(
                 redirect(url_for('Image.images'))
             )
@@ -40,7 +41,6 @@ class LoginAPI(Resource):
             'login.html',
             form=self.form
         ))
-        resp.set_cookie('status', LoginState.STATE_OFFLINE)
         return resp
 
     def post(self):
@@ -51,7 +51,7 @@ class LoginAPI(Resource):
         user, message = UserService(db).check_user_passwd(username, password)
         if user is None:
             flash(message, 'danger')
-            return redirect(url_for('Auth.auth-login'))
+            return redirect(url_for('Auth.login'))
         login_user(user, remember=remember)
         resp = current_app.make_response(
             redirect(url_for('Image.images'))
@@ -60,8 +60,14 @@ class LoginAPI(Resource):
         return resp
 
 
-register_page_parser = reqparse.RequestParser()
-register_page_parser.add_argument('code', type=unicode, required=False, location='args') # NOQA
+class LogoutAPI(Resource):
+    def get(self):
+        logout_user()
+        resp = current_app.make_response(
+            redirect(url_for('.login'))
+        )
+        return resp
+
 
 register_parser = query_parser.copy()
 register_parser.add_argument('username', type=unicode, required=True, location='form')  # NOQA
@@ -71,7 +77,6 @@ register_parser.add_argument('email', type=unicode, required=True, location='for
 
 class RegisterAPI(Resource):
     def get(self):
-        args = register_page_parser.parse_args()
         return Response(render_template(
             'register.html',
             can_register=True
@@ -96,19 +101,25 @@ class RegisterAPI(Resource):
         new_user = UserService(db).get_user_by_name(username)
         UserService(db).add_user_dir(new_user.id)
         login_user(new_user, remember=False)
-        return redirect(url_for('Auth.auth-login'))
+        return redirect(url_for('Auth.login'))
 
 
 auth_api.add_resource(
     LoginAPI,
     '/auth/login',
-    endpoint='auth-login'
+    endpoint='login'
+)
+auth_api.add_resource(
+    LogoutAPI,
+    '/auth/logout',
+    endpoint='logout'
 )
 auth_api.add_resource(
     RegisterAPI,
     '/auth/register',
-    endpoint='auth-register'
+    endpoint='register'
 )
+
 
 frontend = Blueprint('frontend', __name__, template_folder='templates')
 

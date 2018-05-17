@@ -53,7 +53,7 @@ def configure_foundations(app):
         db.session.close()
 
     login_manager.init_app(app)
-    login_manager.login_view = 'authV2.auth-login'
+    login_manager.login_view = 'Auth.login'
     login_manager.login_message = u'请登录'
 
     @login_manager.user_loader
@@ -113,6 +113,8 @@ def configure_foundations(app):
     @app.before_request
     def before_request():
         g.user_id = current_user.id if hasattr(current_user, 'id') else None
+        if g.user_id is None:
+            return
         now = int(time.time())
         g.TIMESTAMP = now
 
