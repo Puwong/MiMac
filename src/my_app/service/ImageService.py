@@ -11,3 +11,10 @@ class ImageService(BaseService):
     def create_label(image):
         select_alg(image)(image).create()
 
+    @staticmethod
+    def label(image, label):
+        select_alg(image)(image).edit(label)
+
+    @staticmethod
+    def algorithm(image):
+        return select_alg(image)(image)

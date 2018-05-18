@@ -5,6 +5,7 @@ from my_app.foundation import csrf, db
 from my_app.service import UserService, ImageService
 from my_app.models import Image, ImageUserRelationship
 from my_app.common.constant import ImageAlgorithm
+from my_app.common.constant import ImageState
 
 image_bp = Blueprint('Image', __name__)
 csrf.exempt(image_bp)
@@ -29,6 +30,7 @@ class ImageShowAPI(Resource):
 class ImageEditAPI(Resource):
 
     def get(self, action, image_id):
+        from my_app.common.tools import file2json
         if not permission_check(image_id):
             return "Permission Deny !"
         image = ImageService(db).get(image_id)
@@ -41,15 +43,36 @@ class ImageEditAPI(Resource):
             return current_app.make_response(redirect(url_for('Image.images')))
         db.session.commit()
         if action == 'label':
+            label = file2json(image.uri+'.label')
             return current_app.make_response(render_template(
-                'label.html',
-                image=image
+                'image.html',
+                image=image,
+                action='label',
+                label=label
+            ))
+        elif action == 'rename':
+            return current_app.make_response(render_template(
+                'image.html',
+                image=image,
+                action='rename'
             ))
         else:
             return current_app.make_response(render_template(
                 'image.html',
                 image=image
             ))
+
+    def post(self, action, image_id):
+        image = ImageService(db).get(image_id)
+        if action == 'rename':
+            image.title = request.form['filename']
+            db.session.commit()
+        elif action == 'label':
+            ImageService(db).label(image, request.form['label'])
+        return current_app.make_response(render_template(
+            'image.html',
+            image=image
+        ))
 
 
 class ImageAPI(Resource):
@@ -114,6 +137,7 @@ class ImageUploadAPI(Resource):
             db.session.commit()
             file.save(fr.image.uri)
             ImageService.create_label(fr.image)
+            #ImageService.algorithm(fr.image).predict()
             return current_app.make_response(render_template(
                 'upload.html',
                 result='Upload success',

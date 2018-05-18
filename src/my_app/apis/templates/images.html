@@ -15,7 +15,7 @@
     {% if not image.image.delete %}
     <a href={{url_for('Image.image',image_id=image.image.id)}}  target=_blank>
         <img src={{url_for('Image.show',image_id=image.image.id)}}  alt="{{image.image.id}}"/><br>
-        <p>{{image.image.title}}</p>
+        <p>{{image.image.title}}   （{{g.image_state[image.image.state]}}）</p>
     </a>
     <hr>
     {% endif %}

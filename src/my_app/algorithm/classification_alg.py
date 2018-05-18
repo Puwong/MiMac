@@ -8,17 +8,18 @@ from keras.models import model_from_json
 from keras.preprocessing import image
 from keras.applications.vgg16 import preprocess_input
 from .base_alg import BaseAlg
-from my_app.common.constant import ImageAlgorithm
+from my_app.common.constant import ImageAlgorithm, ImageState
+from my_app.foundation import db
 
 
 class BiClassAlg(BaseAlg):
 
-    def __init__(self, image):
-        super(BiClassAlg, self).__init__(image)
+    def __init__(self, img):
+        super(BiClassAlg, self).__init__(img)
         self.type1 = 'type1'
         self.type2 = 'type2'
-        self.model_weight = 'b_c_basic.h5'
-        self.model = 'b_c_basic.json'
+        self.model_weight = 'file/b_c_basic.h5'
+        self.model = 'file/b_c_basic.json'
         self.train_data_dir = ''
 
     def create(self, save=True):
@@ -35,8 +36,14 @@ class BiClassAlg(BaseAlg):
         }
         json2file(info, get_label_path(g.user_id, self.image.id))
 
-    def edit(self):
-        pass
+    def edit(self, value):
+        from my_app.common.tools import file2json, json2file
+        from my_app.service import ImageService
+        label = file2json(self.image.uri + '.label')
+        label['data']['value'] = int(value)
+        json2file(label, self.image.uri + '.label')
+        self.image.state = ImageState.DONE_LABEL
+        db.session.commit()
 
     def train_dir_prepare(self):
         pass
@@ -83,6 +90,7 @@ class BiClassAlg(BaseAlg):
         model.save_weights(self.model_weight)
 
     def predict(self):
+        from my_app.common.tools import file2json, json2file
         model = model_from_json(open(self.model).read())
         model.load_weights(self.model_weight)
 
@@ -93,22 +101,27 @@ class BiClassAlg(BaseAlg):
         x = preprocess_input(x)
 
         pred = model.predict(x)
+        label = file2json(self.image.uri + '.label')
+        label['data']['value'] = pred
+        json2file(label, self.image.uri + '.label')
+        self.image.state = ImageState.DONE_LABEL
+        db.session.commit()
         return pred
 
 
-class BiClassAlgCatDog(BaseAlg):
+class BiClassAlgCatDog(BiClassAlg):
 
-    def __init__(self, image):
-        super(BiClassAlgCatDog, self).__init__(image)
+    def __init__(self, img):
+        super(BiClassAlgCatDog, self).__init__(img)
         self.type1 = 'cat'
         self.type2 = 'dog'
-        self.model_weight = 'b_c_cat_dog.h5'
+        self.model_weight = 'file/b_c_cat_dog.h5'
 
 
 class MulClassAlg(BaseAlg):
 
-    def __init__(self, image, class_cnt):
-        super(MulClassAlg, self).__init__(image)
+    def __init__(self, img, class_cnt=10):
+        super(MulClassAlg, self).__init__(img)
         self.key = ['type'+str(i+1) for i in range(class_cnt)]
         self.model_weight = 'm_c_basic.h5'
 
@@ -124,7 +137,7 @@ class MulClassAlg(BaseAlg):
         }
         json2file(info, get_label_path(g.user_id, self.image.id))
 
-    def edit(self):
+    def edit(self, label):
         pass
 
     def train(self):

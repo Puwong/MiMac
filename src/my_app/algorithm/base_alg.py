@@ -15,7 +15,7 @@ class BaseAlg(object):
         }
         json2file(info, get_label_path(g.user_id, self.image.id))
 
-    def edit(self):
+    def edit(self, label):
         pass
 
     def train(self):

@@ -11,13 +11,13 @@ def resize_img(from_dir, to_dir, new_size=(224,224)):
     img.save(to_dir)
 
 
-def json2file(my_json, my_file):
-    with open(my_file, 'w') as f:
+def json2file(my_json, file_dir):
+    with open(file_dir, 'w') as f:
         f.write(json.dumps(my_json))
 
 
-def file2json(my_file):
-    with open(my_file) as f:
+def file2json(file_dir):
+    with open(file_dir) as f:
         return json.loads((f.read()))
 
 

@@ -112,9 +112,10 @@ def configure_foundations(app):
     """
     @app.before_request
     def before_request():
+        from my_app.common.constant import ImageAlgorithm, ImageState
         g.user_id = current_user.id if hasattr(current_user, 'id') else None
-        if g.user_id is None:
-            return
+        g.image_alg = ImageAlgorithm.AlgDict
+        g.image_state = ImageState.StateDict
         now = int(time.time())
         g.TIMESTAMP = now
 

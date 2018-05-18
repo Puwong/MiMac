@@ -34,6 +34,7 @@ class ImageState(Constants):
         LABELING: u'正在标注',
         DONE_LABEL: u'标注完成',
     }
+    StateDict = _state_mapping
 
 
 class ImageAlgorithm(Constants):
@@ -48,7 +49,7 @@ class ImageAlgorithm(Constants):
         BiClassCatDog: u'有猫病诊断',
         MulClass: u'多分类',
     }
-
+    AlgDict = _state_mapping
     AlgList = [{'code': key, 'desc': _state_mapping[key]} for key in _state_mapping]
 
 
