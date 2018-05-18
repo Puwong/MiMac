@@ -5,6 +5,8 @@ from my_app.common.constant import ImageAlgorithm
 class BaseAlg(object):
 
     def __init__(self, image):
+        from my_app import app_conf
+        self.alg_dir = app_conf('ALG_DIR')
         self.image = image
 
     def create(self):

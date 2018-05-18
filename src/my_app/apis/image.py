@@ -5,7 +5,6 @@ from my_app.foundation import csrf, db
 from my_app.service import UserService, ImageService
 from my_app.models import Image, ImageUserRelationship
 from my_app.common.constant import ImageAlgorithm
-from my_app.common.constant import ImageState
 
 image_bp = Blueprint('Image', __name__)
 csrf.exempt(image_bp)
@@ -109,6 +108,7 @@ class ImageUploadAPI(Resource):
 
     def post(self):
         from my_app.common.tools import get_user_file_path, allowed_file
+        from my_app.tasks import predict
         if 'file' not in request.files:
             flash('No file part')
             return current_app.make_response(render_template(
@@ -137,7 +137,7 @@ class ImageUploadAPI(Resource):
             db.session.commit()
             file.save(fr.image.uri)
             ImageService.create_label(fr.image)
-            #ImageService.algorithm(fr.image).predict()
+            predict.delay(fr.image.id)
             return current_app.make_response(render_template(
                 'upload.html',
                 result='Upload success',

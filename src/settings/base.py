@@ -28,8 +28,8 @@ LOGGER_NORMAL = "logger_normal.log"
 LOGGER_ERROR = "logger_error.log"
 LOGGER_DEBUG = "logger_debug.log"
 
-UPLOAD_FOLDER = PROJECT_DIR + '/file'
-USER_DIR = UPLOAD_FOLDER
+USER_DIR = PROJECT_DIR + '/user_file'
+ALG_DIR = PROJECT_DIR + '/alg_file'
 
 ALLOWED_EXTENSIONS = set(['dicm', 'png', 'jpg', 'jpeg', 'gif', 'log', 'json'])
 
@@ -59,11 +59,17 @@ CELERYBEAT_SCHEDULE = {
         'task': 'my_app.tasks.test_cron_2',
         'schedule': crontab(hour=11, minute=0, day_of_week=[1, 2, 3, 4, 5]),
     },
+    'schedule-train': {
+        'task': 'my_app.tasks.train',
+        'schedule': crontab(hour=0, minute=0, day_of_week=[0, 1, 2, 3, 4, 5, 6]),
+    },
 }
 
 CELERY_ROUTES = {
     'my_app.tasks.test_delay_1': {'queue': 'app_logic'},
+    'my_app.tasks.train': {'queue': 'app_logic'},
     'my_app.tasks.test_delay_2': {'queue': 'app_simple_logic'},
+    'my_app.tasks.predict': {'queue': 'app_simple_logic'},
 
     'my_app.tasks.test_cron_1': {'queue': 'cron_timer'},  # NOQA: E501
     'my_app.tasks.test_cron_2': {'queue': 'cron_timer'},

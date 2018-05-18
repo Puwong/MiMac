@@ -7,8 +7,10 @@
 <body>
 {% if g.user_id %}
 你好，亲爱的第 {{g.user_id}} 位注册用户<br>
-{% endif %}
+<a href={{url_for('Auth.logout')}}>登出</a>
+{% else %}
 <a href={{url_for('Auth.login')}}>登录</a>
+{% endif %}
 <a href={{url_for('Auth.register')}}>注册</a>
 </body>
 </html>

@@ -18,8 +18,8 @@ class BiClassAlg(BaseAlg):
         super(BiClassAlg, self).__init__(img)
         self.type1 = 'type1'
         self.type2 = 'type2'
-        self.model_weight = 'file/b_c_basic.h5'
-        self.model = 'file/b_c_basic.json'
+        self.model_weight = os.path.join(self.alg_dir, 'b_c_basic.h5')
+        self.model = os.path.join(self.alg_dir, 'b_c_basic.json')
         self.train_data_dir = ''
 
     def create(self, save=True):
@@ -38,7 +38,6 @@ class BiClassAlg(BaseAlg):
 
     def edit(self, value):
         from my_app.common.tools import file2json, json2file
-        from my_app.service import ImageService
         label = file2json(self.image.uri + '.label')
         label['data']['value'] = int(value)
         json2file(label, self.image.uri + '.label')
@@ -102,7 +101,7 @@ class BiClassAlg(BaseAlg):
 
         pred = model.predict(x)
         label = file2json(self.image.uri + '.label')
-        label['data']['value'] = pred
+        label['data']['value'] = round(pred[0][0])
         json2file(label, self.image.uri + '.label')
         self.image.state = ImageState.DONE_LABEL
         db.session.commit()
@@ -115,7 +114,7 @@ class BiClassAlgCatDog(BiClassAlg):
         super(BiClassAlgCatDog, self).__init__(img)
         self.type1 = 'cat'
         self.type2 = 'dog'
-        self.model_weight = 'file/b_c_cat_dog.h5'
+        self.model_weight = os.path.join(self.alg_dir, 'b_c_cat_dog.h5')
 
 
 class MulClassAlg(BaseAlg):
