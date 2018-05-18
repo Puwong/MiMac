@@ -1,9 +1,22 @@
 # 设计
+
+## 开发规范
+
+### 后端代码基于 pep8 规范进行编写
+
+### todo_list 说明
 - doing  正在做的，太蠢了所以到现在还没做完
 - done  已经完成的bug（bug里面藏代码说的就是我）
-- todo 必须做的，完成所有的todo立马开始做
-- pending  不重要或者有代替方案，完成所有的todo，就去做
-- abandon  没空做啦QAQ，完成所有的pending就去做
+- todo 必须做的，完成所有的 todo 立马开始做
+- pending  不重要或者有代替方案，完成所有的 todo，就去做
+- abandon  没空做啦QAQ，完成所有的 pending 就去做
+
+### git_message 说明
+- feat：新功能（feature）
+- fix：修补bug
+- docs：文档（documentation）
+- drop: 删除文件
+- test: 添加 UnitTest
 
 ## 后端
 
@@ -17,7 +30,7 @@
 - OAuth2 (abandon)
 
 ### 组织(pending)
-
+同一个组织可以方便的share文件
 ### 文件 (doing)
 ```text
 这里对于label文件特别说明一下，它和用什么网络(VGG/CNN/restnet)应该是没有关系的，只和图片和图片所属的任务类型有关
