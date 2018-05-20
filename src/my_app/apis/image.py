@@ -26,6 +26,15 @@ class ImageShowAPI(Resource):
         return send_file(image.uri, attachment_filename=image.title)
 
 
+class ImageTinyAPI(Resource):
+
+    def get(self, image_id):
+        if not permission_check(image_id):
+            return "Permission Deny !"
+        image = ImageService(db).get(image_id)
+        return send_file(image.uri + '.tiny', attachment_filename=image.title)
+
+
 class ImageEditAPI(Resource):
 
     def get(self, action, image_id):
@@ -107,7 +116,7 @@ class ImageUploadAPI(Resource):
         ))
 
     def post(self):
-        from my_app.common.tools import get_user_file_path, allowed_file
+        from my_app.common.tools import get_user_file_path, allowed_file, resize_img
         from my_app.tasks import predict
         if 'file' not in request.files:
             flash('No file part')
@@ -136,6 +145,7 @@ class ImageUploadAPI(Resource):
             fr.image.uri = get_user_file_path(fr.image.id)
             db.session.commit()
             file.save(fr.image.uri)
+            resize_img(fr.image.uri, fr.image.uri + '.tiny')
             ImageService.create_label(fr.image)
             predict.delay(fr.image.id)
             return current_app.make_response(render_template(
@@ -159,6 +169,11 @@ image_api.add_resource(
     ImageShowAPI,
     '/image/show/<int:image_id>',
     endpoint='show'
+)
+image_api.add_resource(
+    ImageTinyAPI,
+    '/image/tiny/<int:image_id>',
+    endpoint='tiny'
 )
 image_api.add_resource(
     ImageUploadAPI,
