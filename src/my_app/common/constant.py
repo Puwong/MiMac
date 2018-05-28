@@ -37,17 +37,56 @@ class ImageState(Constants):
     StateDict = _state_mapping
 
 
-class ImageAlgorithm(Constants):
+class MessageType(Constants):
+    NORMAL = 1
+    REPLY_NEEDED = 2
+    YES_OR_NO = 3
+
+    _state_mapping = {
+        NORMAL: u'普通消息',
+        REPLY_NEEDED: u'需要回复',
+        YES_OR_NO: u'态度询问',
+    }
+
+
+class UserRole(Constants):
+    ADMIN = 1
+    NORMAL = 2
+
+    _state_mapping = {
+        ADMIN: u'系统管理员',
+        NORMAL: u'普通用户',
+    }
+
+
+class BaseAlgorithm(Constants):
     Base = 0
+
+    Classification = 1100
     BiClass = 1101
     BiClassCatDog = 1102
-    MulClass = 1201
+    MulClass = 1151
+
+    Recognition = 1200
+
+    Segmentation = 1300
+    SemanticSegmentation = 1310
+    InstanceSegmentation = 1320
+    PanopticSegmentation = 1330
+
+    Caption = 1400
     # 提示一下，添加算法的时候也要更新 algorithm 的 __init__.py
     _state_mapping = {
         Base: u'基础算法',
         BiClass: u'二分类',
-        BiClassCatDog: u'有猫病诊断',
+        BiClassCatDog: u'猫狗二分类',
         MulClass: u'多分类',
+        Recognition: u'图像识别',
+        Segmentation: u'图像分割',
+        SemanticSegmentation: u'语义分割',
+        InstanceSegmentation: u'实例分割',
+        PanopticSegmentation: u'全景分割',
+        Caption: u'图像表达',
     }
     AlgDict = _state_mapping
     AlgList = [{'code': key, 'desc': _state_mapping[key]} for key in _state_mapping]

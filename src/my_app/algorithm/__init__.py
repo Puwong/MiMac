@@ -1,13 +1,13 @@
 from .base_alg import BaseAlg
 from classification_alg import BiClassAlg, MulClassAlg, BiClassAlgCatDog
-from my_app.common.constant import ImageAlgorithm
+from my_app.common.constant import BaseAlgorithm
 
 
 def select_alg(image):
     alg_dict = {
-        ImageAlgorithm.Base: BaseAlg,
-        ImageAlgorithm.BiClass: BiClassAlg,
-        ImageAlgorithm.BiClassCatDog: BiClassAlgCatDog,
-        ImageAlgorithm.MulClass: MulClassAlg,
+        BaseAlgorithm.Base: BaseAlg,
+        BaseAlgorithm.BiClass: BiClassAlg,
+        BaseAlgorithm.BiClassCatDog: BiClassAlgCatDog,
+        BaseAlgorithm.MulClass: MulClassAlg,
     }
-    return alg_dict[image.alg]
+    return alg_dict[image.alg.alg]

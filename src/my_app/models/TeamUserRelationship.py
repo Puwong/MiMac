@@ -3,8 +3,7 @@ from my_app.foundation import db
 
 
 class TeamUserRelationship(db.Model):
-    team_id = db.Column(db.Integer, db.ForeignKey('team.id'), primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     isLeader = db.Column(db.Boolean, nullable=False, default=False)
-    user = db.relationship("User", back_populates="teams")
-    team = db.relationship("Team", back_populates="users")

@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 from my_app.foundation import csrf, db
 from my_app.service import UserService, ImageService
 from my_app.models import Image, ImageUserRelationship
-from my_app.common.constant import ImageAlgorithm
+from my_app.common.constant import BaseAlgorithm
 
 image_bp = Blueprint('Image', __name__)
 csrf.exempt(image_bp)
@@ -112,7 +112,7 @@ class ImageUploadAPI(Resource):
     def get(self):
         return current_app.make_response(render_template(
             'upload.html',
-            algs=ImageAlgorithm.AlgList
+            algs=BaseAlgorithm.AlgList
         ))
 
     def post(self):
@@ -123,7 +123,7 @@ class ImageUploadAPI(Resource):
             return current_app.make_response(render_template(
                 'upload.html',
                 result='ERROR! file not found',
-                algs=ImageAlgorithm.AlgList
+                algs=BaseAlgorithm.AlgList
             ))
         file = request.files['file']
         # if user does not select file, browser also
@@ -133,7 +133,7 @@ class ImageUploadAPI(Resource):
             return current_app.make_response(render_template(
                 'upload.html',
                 result="ERROR! filename shouldn't be empty",
-                algs=ImageAlgorithm.AlgList
+                algs=BaseAlgorithm.AlgList
             ))
         if file and allowed_file(file.filename):
             owner = UserService(db).get(g.user_id)
@@ -151,7 +151,7 @@ class ImageUploadAPI(Resource):
             return current_app.make_response(render_template(
                 'upload.html',
                 result='Upload success',
-                algs=ImageAlgorithm.AlgList
+                algs=BaseAlgorithm.AlgList
             ))
 
 

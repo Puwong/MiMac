@@ -38,6 +38,15 @@ def remove_dir_loop(my_dir):
             os.remove(my_dir)
 
 
+def create_dir_loop(my_dir):
+    dirs = my_dir.split('/')
+    total_dir = ''
+    for dir in dirs:
+        total_dir += dir + '/'
+        if not os.path.isdir(total_dir):
+            os.mkdir(total_dir)
+
+
 def get_label_path(*args):
     return get_file_path(*args, extension='label')
 

@@ -6,4 +6,4 @@ class MessageBatch(db.Model):
     title = db.Column(db.String(128))
     from_user_id = db.Column(db.Integer, index=True)
     to_user_id = db.Column(db.Integer, index=True)
-    teams = db.relationship("Message", lazy='dynamic')
+    messages = db.relationship("Message", backref="message_batch", lazy='dynamic')

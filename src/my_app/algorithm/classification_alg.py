@@ -8,7 +8,7 @@ from keras.models import model_from_json
 from keras.preprocessing import image
 from keras.applications.vgg16 import preprocess_input
 from .base_alg import BaseAlg
-from my_app.common.constant import ImageAlgorithm, ImageState
+from my_app.common.constant import BaseAlgorithm, ImageState
 from my_app.foundation import db
 
 
@@ -25,7 +25,7 @@ class BiClassAlg(BaseAlg):
     def create(self, save=True):
         from my_app.common.tools import get_label_path, json2file
         info = {
-            'alg': ImageAlgorithm.BiClass,
+            'alg': BaseAlgorithm.BiClass,
             'data': {
                 'key': {
                     0: self.type1,
@@ -127,7 +127,7 @@ class MulClassAlg(BaseAlg):
     def create(self, save=True):
         from my_app.common.tools import get_label_path, json2file
         info = {
-            'alg': ImageAlgorithm.MulClass,
+            'alg': BaseAlgorithm.MulClass,
             'data': {
                 'key': self.key,
                 'weight': [0] * len(self.key),

@@ -1,5 +1,5 @@
 from flask import g
-from my_app.common.constant import ImageAlgorithm
+from my_app.common.constant import BaseAlgorithm
 
 
 class BaseAlg(object):
@@ -12,7 +12,7 @@ class BaseAlg(object):
     def create(self):
         from my_app.common.tools import get_label_path, json2file
         info = {
-            'alg': ImageAlgorithm.Base,
+            'alg': BaseAlgorithm.Base,
             'data': {}
         }
         json2file(info, get_label_path(g.user_id, self.image.id))
