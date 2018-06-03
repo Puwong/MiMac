@@ -21,8 +21,9 @@ def json2file(my_json, file_dir):
 
 def file2json(file_dir):
     data = None
-    with open(file_dir) as f:
-        data = f.read()
+    if os.path.isfile(file_dir):
+        with open(file_dir) as f:
+            data = f.read()
     return json.loads(data) if data else None
 
 

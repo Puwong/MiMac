@@ -12,6 +12,7 @@
     <a href={{url_for('Image.image',image_id=image.id)}}  target=_blank class="thumbnail">
         <img src={{url_for('Image.tiny',image_id=image.id)}}  alt="{{image.id}}"/><br>
         <p>{{image.title}}  </p>
+        <small>Circumstance: {{image.alg.title}}</small><br>
         <small>（{{g.image_state[image.state]}}）{{images[image]}}</small>
     </a>
 </div>

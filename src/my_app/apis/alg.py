@@ -58,14 +58,14 @@ class NewAlgAPI(Resource):
     def get(self):
         return current_app.make_response(render_template(
             'alg.html',
-            base_algs=BaseAlgorithm.AlgList
+            base_algs=BaseAlgorithm
         ))
 
     @login_required
     def post(self):
         title = request.form.get('title')
         base = request.form.get('base')
-        labels = request.form.get('labels').split(',')
+        labels = request.form.get('labels').split(' ')
         AlgService(db).create(title=title, base=base, config=json.dumps({
             'class_cnt': len(labels),
             'labels': labels
@@ -82,7 +82,7 @@ class AlgAPI(Resource):
         return current_app.make_response(render_template(
             'algs.html',
             alg=Alg.query.all(),
-            base_alg=BaseAlgorithm.AlgDict
+            base_alg=BaseAlgorithm.AlgDict,
         ))
 
     @login_required

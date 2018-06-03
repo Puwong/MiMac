@@ -11,13 +11,23 @@
 {% endif %}
 <img src={{url_for('Image.show',image_id=image.id)}}  alt="{{image.id}}"/><br>
 {% if not image.freeze %}
-    {% if action == 'label' and label['alg']//100 == 11 %}
-        <form method="post" action={{url_for('Image.edit',action='label',image_id=image.id)}}>
-            {{label['data']['key'][0]}} <input type="radio" {% if label['data']['value'] == 0 %} checked="checked" {% endif %} name="label" value=0 /><br>
-            {{label['data']['key'][1]}} <input type="radio" {% if label['data']['value'] == 1 %} checked="checked" {% endif %} name="label" value=1 /><br>
-            <input type="submit"><br>
-        </form>
-    {% else %}
+    {% if action == 'label' %}
+        {% if label['alg'] in (base_alg.Classification, base_alg.BiClass) %}
+            <form method="post" action={{url_for('Image.edit',action='label',image_id=image.id)}}>
+                {% for i in range(label_num) %}
+                {{label['data']['key'][i]}} <input type="radio" {% if label['data']['value'] == i %} checked="checked" {% endif %} name="label" value={{i}} /><br>
+                {% endfor %}
+                <input type="submit"><br>
+            </form>
+        {% elif label['alg']==base_alg.Caption %}
+            <form method="post" action={{url_for('Image.edit',action='label',image_id=image.id)}} id="caption">
+                <textarea name="label" form="caption" rows="3">{{label['data']['value']}}</textarea>
+                <input type="submit"><br>
+            </form>
+        {% else %}
+            <p> this algorithm is not support for now</p>
+        {% endif %}
+        {% else %}
         {{result}}（{{g.image_state[image.state]}}）<a href={{url_for('Image.edit',action='label',image_id=image.id)}}>标注</a><br>
     {% endif %}
 {% endif %}

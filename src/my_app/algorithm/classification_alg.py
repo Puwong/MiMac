@@ -23,8 +23,6 @@ class BiClassAlg(BaseAlg):
         alg_config = json.loads(alg.config)
         self.alg = BaseAlgorithm.BiClass
         self.labels = alg_config['labels'] if alg_config and alg and len(alg_config['labels']) == 2 else ['type1', 'type2']
-        self.model_weight = os.path.join(self.alg_dir, 'weight.h5')
-        self.model = os.path.join(self.alg_dir, 'model.json')
         self.train_data_dir = ''
 
     def create(self, save=True):
@@ -33,7 +31,7 @@ class BiClassAlg(BaseAlg):
             'alg': BaseAlgorithm.BiClass,
             'data': {
                 'key': self.labels,
-                'weight': [0, 0],
+                'weight': [str(0), str(0)],
                 'value': 0,
             }
         }
@@ -117,27 +115,35 @@ class BiClassAlg(BaseAlg):
         return pred
 
 
-class MulClassAlg(BaseAlg):
+class ClassificationAlg(BaseAlg):
 
-    def __init__(self, img, class_cnt=10):
-        super(MulClassAlg, self).__init__(img)
-        self.key = ['type'+str(i+1) for i in range(class_cnt)]
-        self.model_weight = 'm_c_basic.h5'
+    def __init__(self, img):
+        super(ClassificationAlg, self).__init__(img)
+        alg = img.alg
+        alg_config = json.loads(alg.config)
+        self.alg = BaseAlgorithm.Classification
+        self.labels = alg_config['labels'] if alg_config and alg else ['type1', 'type2']
+        self.train_data_dir = ''
 
     def create(self, save=True):
         from my_app.common.tools import get_label_path, json2file
         info = {
-            'alg': BaseAlgorithm.MulClass,
+            'alg': BaseAlgorithm.Classification,
             'data': {
-                'key': self.key,
-                'weight': [0] * len(self.key),
-                'value': 1
+                'key': self.labels,
+                'weight': [str(0)] * len(self.labels),
+                'value': 0
             }
         }
         json2file(info, get_label_path(g.user_id, self.image.id))
 
-    def edit(self, label):
-        pass
+    def edit(self, value):
+        from my_app.common.tools import file2json, json2file
+        label = file2json(self.image.uri + '.label')
+        label['data']['value'] = int(value)
+        json2file(label, self.image.uri + '.label')
+        self.image.state = ImageState.DONE_LABEL
+        db.session.commit()
 
     def train(self):
         pass

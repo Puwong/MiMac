@@ -2,7 +2,7 @@
 from .BaseService import BaseService
 from my_app.algorithm import select_alg
 from my_app.models import Image, User
-from my_app.common.constant import ImageState
+from my_app.common.constant import ImageState, BaseAlgorithm
 
 
 class ImageService(BaseService):
@@ -24,10 +24,13 @@ class ImageService(BaseService):
         image = self.get(id_or_ins)
         data = self.get_label_data(image)
         if image.state == ImageState.DONE_LABEL or ignore_state:
-            if 'value' in data['data']:
-                value = data['data']['value']
-                if type(data['data']['key']) == list and value < len(data['data']['key']):
-                    return data['data']['key'][value] if with_desc else value
+            if image.alg.base == BaseAlgorithm.Caption:
+                return data['data']['value']
+            elif image.alg.base in (BaseAlgorithm.Classification, BaseAlgorithm.BiClass):
+                if 'value' in data['data']:
+                    value = data['data']['value']
+                    if type(data['data']['key']) == list and value < len(data['data']['key']):
+                        return data['data']['key'][value] if with_desc else value
         return '' if with_desc else None
 
     def get_label_data(self, id_or_ins):

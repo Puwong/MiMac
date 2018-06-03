@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 from my_app.foundation import csrf, db
 from my_app.service import UserService, ImageService, AlgService
 from my_app.models import Image, ImageUserRelationship
+from my_app.common.constant import BaseAlgorithm
 
 image_bp = Blueprint('Image', __name__)
 csrf.exempt(image_bp)
@@ -56,6 +57,8 @@ class ImageEditAPI(Resource):
                 result=ImageService(db).get_label_result(image, with_desc=True),
                 image=image,
                 action='label',
+                base_alg=BaseAlgorithm,
+                label_num=len(label['data']['key']) if 'key' in label['data'].keys() else 0,
                 label=label
             ))
         elif action == 'rename':
