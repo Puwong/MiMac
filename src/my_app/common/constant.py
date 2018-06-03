@@ -89,7 +89,7 @@ class BaseAlgorithm(Constants):
         Caption: u'图像表达',
     }
     AlgDict = _state_mapping
-    AlgList = [{'code': key, 'desc': _state_mapping[key]} for key in _state_mapping]
+    AlgList = sorted([{'code': key, 'desc': _state_mapping[key]} for key in _state_mapping], key=lambda x: x['code'])
 
 
 FLASH_MESSAGES = {

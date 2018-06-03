@@ -6,7 +6,6 @@ from flask_restful import Api, Resource, reqparse
 from .base import query_parser
 
 from my_app.foundation import csrf, db
-from my_app.forms import LoginForm
 from my_app.service import UserService
 from my_app.common.db_helper import exists_query
 from my_app.models import User
@@ -23,7 +22,6 @@ login_parser.add_argument('next', type=unicode, required=False, location='args')
 
 class LoginAPI(Resource):
     def __init__(self):
-        self.form = LoginForm()
         self.args = login_parser.parse_args()
 
     def get(self):
@@ -38,7 +36,6 @@ class LoginAPI(Resource):
             session.pop('uname')
         resp = current_app.make_response(render_template(
             'login.html',
-            form=self.form
         ))
         return resp
 
