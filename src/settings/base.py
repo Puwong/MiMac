@@ -50,7 +50,7 @@ CELERYD_MAX_TASKS_PER_CHILD = 1000
 CELERY_DISABLE_RATE_LIMITS = True
 CELERY_SEND_TASK_SENT_EVENT = True
 CELERY_TRACK_STARTED = True
-
+'''
 CELERYBEAT_SCHEDULE = {
     'timer-clean-expired-data': {
         'task': 'my_app.tasks.test_cron_1',
@@ -65,6 +65,8 @@ CELERYBEAT_SCHEDULE = {
         'schedule': crontab(hour=0, minute=0, day_of_week=[0, 1, 2, 3, 4, 5, 6]),
     },
 }
+'''
+
 
 CELERY_ROUTES = {
     'my_app.tasks.test_delay_1': {'queue': 'app_logic'},

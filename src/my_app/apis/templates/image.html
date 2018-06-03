@@ -13,12 +13,12 @@
 {% if not image.freeze %}
     {% if action == 'label' and label['alg']//100 == 11 %}
         <form method="post" action={{url_for('Image.edit',action='label',image_id=image.id)}}>
-            {{label['data']['key']['0']}} <input type="radio" {% if label['data']['value'] < 0.5 %} checked="checked" {% endif %} name="label" value=0 /><br>
-            {{label['data']['key']['1']}} <input type="radio" {% if label['data']['value'] >= 0.5 %} checked="checked" {% endif %} name="label" value=1 /><br>
+            {{label['data']['key'][0]}} <input type="radio" {% if label['data']['value'] == 0 %} checked="checked" {% endif %} name="label" value=0 /><br>
+            {{label['data']['key'][1]}} <input type="radio" {% if label['data']['value'] == 1 %} checked="checked" {% endif %} name="label" value=1 /><br>
             <input type="submit"><br>
         </form>
     {% else %}
-        （{{g.image_state[image.state]}}）<a href={{url_for('Image.edit',action='label',image_id=image.id)}}>标注</a><br>
+        {{result}}（{{g.image_state[image.state]}}）<a href={{url_for('Image.edit',action='label',image_id=image.id)}}>标注</a><br>
     {% endif %}
 {% endif %}
 <a href={{url_for('Image.edit',action='delete',image_id=image.id)}}>删除</a>

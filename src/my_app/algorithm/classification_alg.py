@@ -32,11 +32,8 @@ class BiClassAlg(BaseAlg):
         info = {
             'alg': BaseAlgorithm.BiClass,
             'data': {
-                'key': {
-                    0: self.labels[0],
-                    1: self.labels[1],
-                },
-                'weight': 0,
+                'key': self.labels,
+                'weight': [0, 0],
                 'value': 0,
             }
         }
@@ -110,8 +107,10 @@ class BiClassAlg(BaseAlg):
         pred = model.predict(x)
         label = file2json(self.image.uri + '.label')
         print pred
-        label['data']['value'] = round(pred[0][0])
-        label['data']['weight'] = pred[0][0]
+        label['data']['value'] = int(round(pred[0][0]))
+        print label['data']['weight']
+        label['data']['weight'][0] = str(pred[0][0])
+        label['data']['weight'][1] = str(1.0 - pred[0][0])
         json2file(label, self.image.uri + '.label')
         self.image.state = ImageState.DONE_LABEL
         db.session.commit()

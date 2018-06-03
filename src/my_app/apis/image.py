@@ -1,11 +1,10 @@
-from flask import Blueprint, request, render_template, current_app, flash, g, send_file, redirect, url_for
+from flask import Blueprint, request, render_template, current_app, g, send_file, redirect, url_for
 from flask_restful import Api, Resource
 from flask_login import login_required
 from werkzeug.utils import secure_filename
 from my_app.foundation import csrf, db
 from my_app.service import UserService, ImageService, AlgService
 from my_app.models import Image, ImageUserRelationship
-from my_app.common.constant import BaseAlgorithm
 
 image_bp = Blueprint('Image', __name__)
 csrf.exempt(image_bp)
@@ -39,7 +38,6 @@ class ImageTinyAPI(Resource):
 class ImageEditAPI(Resource):
     @login_required
     def get(self, action, image_id):
-        from my_app.common.tools import file2json
         if not permission_check(image_id):
             return "Permission Deny !"
         image = ImageService(db).get(image_id)
@@ -52,9 +50,10 @@ class ImageEditAPI(Resource):
             return current_app.make_response(redirect(url_for('Image.images')))
         db.session.commit()
         if action == 'label':
-            label = file2json(image.uri+'.label')
+            label = ImageService(db).get_label_data(image)
             return current_app.make_response(render_template(
                 'image.html',
+                result=ImageService(db).get_label_result(image, with_desc=True),
                 image=image,
                 action='label',
                 label=label
@@ -62,12 +61,14 @@ class ImageEditAPI(Resource):
         elif action == 'rename':
             return current_app.make_response(render_template(
                 'image.html',
+                result=ImageService(db).get_label_result(image, with_desc=True),
                 image=image,
                 action='rename'
             ))
         else:
             return current_app.make_response(render_template(
                 'image.html',
+                result=ImageService(db).get_label_result(image, with_desc=True),
                 image=image
             ))
 
@@ -81,6 +82,7 @@ class ImageEditAPI(Resource):
             ImageService(db).label(image, request.form['label'])
         return current_app.make_response(render_template(
             'image.html',
+            result=ImageService(db).get_label_result(image, with_desc=True),
             image=image
         ))
 
@@ -93,6 +95,7 @@ class ImageAPI(Resource):
         image = ImageService(db).get(image_id)
         return current_app.make_response(render_template(
             'image.html',
+            result=ImageService(db).get_label_result(image, with_desc=True),
             image=image
         ))
 
@@ -102,7 +105,9 @@ class ImagesAPI(Resource):
     @login_required
     def get(self):
         user = UserService(db).get(g.user_id)
-        images = user.images
+        images = dict()
+        for i in user.images:
+            images[i.image] = ImageService(db).get_label_result(i.image, with_desc=True)
         return current_app.make_response(render_template(
             'images.html',
             images=images
@@ -121,8 +126,13 @@ class ImageUploadAPI(Resource):
     def post(self):
         from my_app.common.tools import get_user_file_path, allowed_file, resize_img
         from my_app.tasks import predict
+        if not request.form.get('alg'):
+            return current_app.make_response(render_template(
+                'upload.html',
+                result='ERROR! Please pick up at least one algorithm',
+                algs=AlgService(db).get_my_alg_ids(with_title=True)
+            ))
         if 'file' not in request.files:
-            flash('No file part')
             return current_app.make_response(render_template(
                 'upload.html',
                 result='ERROR! file not found',
@@ -132,7 +142,6 @@ class ImageUploadAPI(Resource):
         # if user does not select file, browser also
         # submit a empty part without filename
         if file.filename == '':
-            flash('No selected file')
             return current_app.make_response(render_template(
                 'upload.html',
                 result="ERROR! filename shouldn't be empty",
@@ -141,8 +150,6 @@ class ImageUploadAPI(Resource):
         if file and allowed_file(file.filename):
             owner = UserService(db).get(g.user_id)
             fr = ImageUserRelationship(isOwner=True)
-
-            request.form.get('alg')
             fr.image = Image(title=secure_filename(file.filename), alg=AlgService(db).get(int(request.form.get('alg'))))
             owner.images.append(fr)
             db.session.add(owner)
@@ -152,7 +159,7 @@ class ImageUploadAPI(Resource):
             file.save(fr.image.uri)
             resize_img(fr.image.uri, fr.image.uri + '.tiny.jpg')
             ImageService.create_label(fr.image)
-            predict.delay(fr.image.id)
+            predict(fr.image.id)
             return current_app.make_response(render_template(
                 'upload.html',
                 result='Upload success',

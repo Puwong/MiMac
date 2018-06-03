@@ -14,6 +14,7 @@ def test_delay_2():
 
 @celery.task
 def predict(image_id):
+    print "predict called--------------------"
     from my_app.service import ImageService
     from my_app import db
     image = ImageService(db).get(image_id)
