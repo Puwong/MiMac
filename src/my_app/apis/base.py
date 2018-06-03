@@ -1,4 +1,5 @@
-from flask import Blueprint
+import os
+from flask import Blueprint, abort
 from flask_restful import Api, Resource, reqparse
 from flask_login import login_required
 
@@ -30,10 +31,28 @@ test_api.add_resource(
     endpoint='test'
 )
 
+static_bp = Blueprint('Static', __name__)
+csrf.exempt(static_bp)
+static_api = Api(static_bp)
 
 
+class StaticFilesAPI(Resource):
+
+    def get(self, filename):
+        from flask import current_app, send_from_directory
+        if filename.endswith('.html'):
+            abort(404)
+        return send_from_directory(
+            os.path.join(current_app.root_path, 'apis/static'),
+            filename
+        )
 
 
+static_api.add_resource(
+    StaticFilesAPI,
+    '/my_static/<path:filename>',
+    endpoint='static'
+)
 
 
 

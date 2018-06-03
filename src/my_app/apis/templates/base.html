@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="http://oo1nxbzgl.bkt.clouddn.com/mimac/icon.png">
+
+    <title>Fixed Top Navbar Example for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="http://oo1nxbzgl.bkt.clouddn.com/mimac/bootstrap.min.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href={{url_for('frontend.landing')}}>MiMac</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href={{url_for('Image.images')}}>Home</a></li>
+            <li><a href="#contact">Algorithm</a></li>
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Article <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="1">New</a></li>
+                  <!--<li role="separator" class="divider"></li>
+                <li class="dropdown-header">share you knowledge</li>-->
+                <li><a href="1">View</a></li>
+              </ul>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="../navbar-static-top/">User</a></li>
+            <!--li class="active" -->
+              <li>
+              {% if g.user_id %}
+              <a href={{url_for('Auth.logout')}}>Logout</a>
+                {% else %}
+                <a href={{url_for('Auth.login')}}>Login</a>
+                {% endif %}
+                </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+        <br>
+        <br>
+        <br>
+        <br>
+
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <div class="container">
+          {% block main_block %}
+        <h1>Not for replace. But for relax</h1>
+        <p>MiMac (Medical Image Management & Assistant Center) is a online medical image management platform which can help you judge a image more efficient</p>
+          <p>
+          <a class="btn btn-lg btn-primary" href={{url_for('Auth.register')}} role="button">Register &raquo;</a>
+        </p>
+          {% endblock %}
+        </div>
+      </div>
+
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+      <script src="http://oo1nxbzgl.bkt.clouddn.com/mimac/jquery.min.js"></script>
+    <script src="http://oo1nxbzgl.bkt.clouddn.com/mimac/bootstrap.min.js"></script>
+  </body>
+</html>

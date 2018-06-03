@@ -3,6 +3,7 @@
 import os
 from celery.schedules import crontab
 
+
 PROJECT_DIR = "/Users/megvii/MiMac"
 
 SECRET_KEY = 'mimac_default'

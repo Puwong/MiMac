@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-from flask import Blueprint, abort, current_app, redirect, flash, session, render_template, url_for, g, Response
+from flask import Blueprint, request, current_app, redirect, flash, session, render_template, url_for, g, Response
 from flask_login import login_user, logout_user
 from flask_restful import Api, Resource, reqparse
 from .base import query_parser
@@ -8,7 +8,6 @@ from .base import query_parser
 from my_app.foundation import csrf, db
 from my_app.forms import LoginForm
 from my_app.service import UserService
-from my_app.common.constant import LoginState
 from my_app.common.db_helper import exists_query
 from my_app.models import User
 
@@ -44,9 +43,9 @@ class LoginAPI(Resource):
         return resp
 
     def post(self):
-        username = self.form.username.data
-        password = self.form.password.data
-        remember = self.form.remember_me.data
+        username = request.form.get('username', None)
+        password = request.form.get('password', None)
+        remember = request.form.get('remember', None)
         next_url = self.args.next
         user, message = UserService(db).check_user_passwd(username, password)
         if user is None:
@@ -54,9 +53,8 @@ class LoginAPI(Resource):
             return redirect(url_for('Auth.login'))
         login_user(user, remember=remember)
         resp = current_app.make_response(
-            redirect(url_for('Image.images'))
+            redirect(next_url if next_url else url_for('Image.images'))
         )
-        #resp.set_cookie('status', LoginState.STATE_ONLINE)
         return resp
 
 
@@ -131,4 +129,6 @@ def web_index():
 
 @frontend.route('/landing')
 def landing():
-    return render_template('landing.html')
+    if g.user_id:
+        return redirect(url_for('Image.images'))
+    return render_template('base.html')

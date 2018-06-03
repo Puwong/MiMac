@@ -10,6 +10,6 @@ class Message(db.Model):
     from_user_id = db.Column(db.Integer)
     message_batch_id = db.Column(db.Integer, db.ForeignKey('message_batch.id'))
 
-    context = db.Column(db.String(20480))
-
+    context = db.Column(db.String(2048))
+    readed = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(db.Integer, default=time.time)

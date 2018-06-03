@@ -1,16 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta charset="UTF-8">
-    <meta name="csrf-token" content="1505356307##188b692c302189c4baafd797303871cd24952820">
-    <title>Title</title>
-</head>
-<body>
-{% if g.user_id %}
-你好，亲爱的第 {{g.user_id}} 位注册用户<br>
-{% endif %}
-<a href={{url_for('frontend.landing')}}>首页</a><br>
+{% extends "base.html" %}
+{% block main_block %}
             {% if can_register %}
     <!--name-input pwd-input-->
     <div class="register-area">
@@ -49,5 +38,5 @@
             <h3>现在不能注册，请联系管理员</h3>
         </div>
         {% endif %}
-</body>
-</html>
+    </div>
+{% endblock %}

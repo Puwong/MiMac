@@ -1,5 +1,6 @@
 from flask import Blueprint, request, render_template, current_app, flash, g, send_file, redirect, url_for
 from flask_restful import Api, Resource
+from flask_login import login_required
 from werkzeug.utils import secure_filename
 from my_app.foundation import csrf, db
 from my_app.service import UserService, ImageService
@@ -99,6 +100,8 @@ class ImageAPI(Resource):
 
 
 class ImagesAPI(Resource):
+
+    @login_required
     def get(self):
         user = UserService(db).get(g.user_id)
         images = user.images
