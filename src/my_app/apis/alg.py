@@ -20,12 +20,12 @@ class AlgsAPI(Resource):
     @login_required
     def get(self):
         print AlgService(db).get_all()
-        print AlgService(db).get_my_algs()
+        print AlgService(db).get_my_alg_ids()
         return current_app.make_response(render_template(
             'algs.html',
             algs=AlgService(db).get_all(),
             base_alg=BaseAlgorithm.AlgDict,
-            my_algs=AlgService(db).get_my_algs(),
+            my_algs=AlgService(db).get_my_alg_ids(),
             isAdmin=(UserService(db).get(g.user_id).role == UserRole.ADMIN)
         ))
 

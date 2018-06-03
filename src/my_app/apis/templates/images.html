@@ -1,13 +1,21 @@
 {% extends "base.html" %}
 {% block main_block %}
-    <a href={{url_for('Image.upload')}}>上传</a><br>
+<div class="row">
+<a class="btn btn-lg btn-primary col-xs-6 col-md-3" href={{url_for('Image.upload')}} role="button">Upload &raquo;</a>
+<br/>
+</div>
+<br/>
+<div class="row">
     {% for image in images %}
     {% if not image.image.delete %}
-    <a href={{url_for('Image.image',image_id=image.image.id)}}  target=_blank>
+<div class="col-xs-6 col-md-3">
+    <a href={{url_for('Image.image',image_id=image.image.id)}}  target=_blank class="thumbnail">
         <img src={{url_for('Image.tiny',image_id=image.image.id)}}  alt="{{image.image.id}}"/><br>
-        <p>{{image.image.title}}   （{{g.image_state[image.image.state]}}）</p>
+        <p>{{image.image.title}}  </p>
+        <small>（{{g.image_state[image.image.state]}}）</small>
     </a>
-    <hr>
+</div>
     {% endif %}
     {% endfor %}
+</div>
 {% endblock %}

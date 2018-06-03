@@ -2,9 +2,9 @@
 {% block main_block %}
 <div>{{result}}</div>
 请选择要上传的图像的所属类型：
-<select name="imagealglist" form="imageform">
+<select name="alg" form="imageform">
     {% for alg in algs %}
-   <option value="{{alg['code']}}">{{alg['desc']}}</option>
+   <option value="{{alg}}">{{algs[alg]}}</option>
    {% endfor %}
 </select>
 <form action={{url_for('Image.upload')}} method="post" enctype="multipart/form-data", id="imageform">

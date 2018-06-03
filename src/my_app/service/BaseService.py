@@ -15,7 +15,9 @@ class BaseService(object):
             if isinstance(id_or_ins, model):
                 return id_or_ins
             elif isinstance(id_or_ins, Integral):
-                return model.query.get(int(id_or_ins))
+                return model.query.get(id_or_ins)
+            else:
+                return None
         else:
             if len(kwargs) == 0:
                 return None

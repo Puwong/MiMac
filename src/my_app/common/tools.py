@@ -3,11 +3,14 @@ import os
 from PIL import Image
 from flask import g
 from my_app import app_conf
+from my_app.service import AlgService
+from my_app.foundation import db
 
 
 def resize_img(from_dir, to_dir, new_size=(224,224)):
     img = Image.open(from_dir)
     img = img.resize(new_size)
+    print to_dir
     img.save(to_dir)
 
 
@@ -63,4 +66,11 @@ def get_file_path(*args, **kargs):
         path = path + '.' + kargs['extension']
     return path
 
+
+def get_alg_path(id_or_ins):
+    return os.path.join(app_conf('ALG_DIR'), str(AlgService(db).get(id_or_ins).id))
+
+
+def get_tiny_path(img_id):
+    return get_file_path(g.user_id, str(img_id)+'.tiny.jpg')
 

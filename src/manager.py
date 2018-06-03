@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
-
+import os
+import ujson as json
+from shutil import copyfile
 from flask.ext.script import Server, Shell, Manager, prompt_bool
 from flask_migrate import Migrate, MigrateCommand
 
 from my_app import app, app_conf
 from my_app.foundation import db
 from my_app.models import User, Team, TeamUserRelationship, Alg
-from my_app.service import UserService
+from my_app.service import UserService, AlgService
 from my_app.common.tools import remove_dir_loop, create_dir_loop
 from my_app.common.constant import BaseAlgorithm, UserRole
 
@@ -30,11 +32,23 @@ def _add_root():
 
 
 def _add_alg():
-    db.session.add(Alg(title='b_c_basic', base=BaseAlgorithm.BiClass))
-    db.session.add(Alg(title='m_c_basic', base=BaseAlgorithm.MulClass))
-    db.session.add(Alg(title=u'猫狗二分类', base=BaseAlgorithm.BiClass))
-    db.session.add(Alg(title=u'肺癌检测', base=BaseAlgorithm.MulClass))
-    db.session.commit()
+    from my_app.common.tools import get_alg_path
+    cd_alg = AlgService(db).create(title=u'猫狗二分类', base=BaseAlgorithm.BiClass, config=json.dumps({
+        'class_cnt': 2,
+        'labels': [u'这是一只猫', u'这是一条狗']
+    }))
+    AlgService(db).create(title=u'肺部CT图像肺结节良恶性诊断', base=BaseAlgorithm.BiClass, config=json.dumps({
+        'class_cnt': 2,
+        'labels': [u'良性肺结节', u'恶性肺结节']
+    }))
+    AlgService(db).create(title=u'乳腺钼靶X线图像良恶性诊断', base=BaseAlgorithm.BiClass, config=json.dumps({
+        'class_cnt': 2,
+        'labels': [u'良性乳腺', u'恶性乳腺']
+    }))
+    alg_path = get_alg_path(cd_alg)
+    print alg_path
+    copyfile(alg_path + '/../../deeplearn/b_c_basic.json', alg_path + '/model.json')
+    copyfile(alg_path + '/../../deeplearn/b_c_cat_dog.h5', alg_path + '/weight.h5')
 
 
 @manager.command
@@ -43,6 +57,7 @@ def dropall():
     if prompt_bool("Are you sure ? You will lose all your data !"):
         db.drop_all()
         remove_dir_loop(app_conf('USER_DIR'))
+        remove_dir_loop(app_conf('ALG_DIR'))
 
 
 @manager.command

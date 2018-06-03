@@ -18,3 +18,8 @@ class ImageService(BaseService):
     @staticmethod
     def algorithm(image):
         return select_alg(image)(image)
+
+    def get_label_data(self, id_or_ins):
+        from my_app.common.tools import file2json, json2file
+        image = self.get(id_or_ins)
+        return file2json(image.uri + '.label')

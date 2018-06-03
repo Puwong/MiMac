@@ -12,17 +12,19 @@ class AlgService(BaseService):
     def get_all(self):
         return self.model.query.filter(Alg.delete==False).all()
 
-    def get_my_algs(self):
+    def get_my_alg_ids(self, with_title=False):
         from .UserService import UserService
         me = UserService(self.db).get(g.user_id)
+        if with_title:
+            return {i.alg_id: i.alg.title for i in me.algs}
         return [i.alg_id for i in me.algs]
 
     def create(self, **kwargs):
-        from my_app.common.tools import create_dir_loop, app_conf
+        from my_app.common.tools import create_dir_loop, get_alg_path
         alg = self.model(**kwargs)
         self.db.session.add(alg)
         self.db.session.commit()
-        alg_path = os.path.join(app_conf('ALG_DIR'), str(alg.id))
+        alg_path = get_alg_path(alg.id)
         create_dir_loop(alg_path)
         return alg
 

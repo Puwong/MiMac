@@ -3,7 +3,7 @@ from flask_restful import Api, Resource
 from flask_login import login_required
 from werkzeug.utils import secure_filename
 from my_app.foundation import csrf, db
-from my_app.service import UserService, ImageService
+from my_app.service import UserService, ImageService, AlgService
 from my_app.models import Image, ImageUserRelationship
 from my_app.common.constant import BaseAlgorithm
 
@@ -14,12 +14,12 @@ image_api = Api(image_bp)
 
 def permission_check(image_id):
     iur = ImageUserRelationship.query.filter_by(user_id=g.user_id, image_id=image_id).all()
-    image = ImageService(db).get(id)
+    image = ImageService(db).get(image_id)
     return len(iur) and not image.delete
 
 
 class ImageShowAPI(Resource):
-
+    @login_required
     def get(self, image_id):
         if not permission_check(image_id):
             return "Permission Deny !"
@@ -28,16 +28,16 @@ class ImageShowAPI(Resource):
 
 
 class ImageTinyAPI(Resource):
-
+    @login_required
     def get(self, image_id):
         if not permission_check(image_id):
             return "Permission Deny !"
         image = ImageService(db).get(image_id)
-        return send_file(image.uri + '.tiny', attachment_filename=image.title)
+        return send_file(image.uri + '.tiny.jpg', attachment_filename=image.title)
 
 
 class ImageEditAPI(Resource):
-
+    @login_required
     def get(self, action, image_id):
         from my_app.common.tools import file2json
         if not permission_check(image_id):
@@ -71,6 +71,7 @@ class ImageEditAPI(Resource):
                 image=image
             ))
 
+    @login_required
     def post(self, action, image_id):
         image = ImageService(db).get(image_id)
         if action == 'rename':
@@ -85,7 +86,7 @@ class ImageEditAPI(Resource):
 
 
 class ImageAPI(Resource):
-
+    @login_required
     def get(self, image_id):
         if not permission_check(image_id):
             return "Permission Deny !"
@@ -94,9 +95,6 @@ class ImageAPI(Resource):
             'image.html',
             image=image
         ))
-
-    def patch(self, image_id):
-        pass
 
 
 class ImagesAPI(Resource):
@@ -112,12 +110,14 @@ class ImagesAPI(Resource):
 
 
 class ImageUploadAPI(Resource):
+    @login_required
     def get(self):
         return current_app.make_response(render_template(
             'upload.html',
-            algs=BaseAlgorithm.AlgList
+            algs=AlgService(db).get_my_alg_ids(with_title=True)
         ))
 
+    @login_required
     def post(self):
         from my_app.common.tools import get_user_file_path, allowed_file, resize_img
         from my_app.tasks import predict
@@ -126,7 +126,7 @@ class ImageUploadAPI(Resource):
             return current_app.make_response(render_template(
                 'upload.html',
                 result='ERROR! file not found',
-                algs=BaseAlgorithm.AlgList
+                algs=AlgService(db).get_my_alg_ids(with_title=True)
             ))
         file = request.files['file']
         # if user does not select file, browser also
@@ -136,25 +136,27 @@ class ImageUploadAPI(Resource):
             return current_app.make_response(render_template(
                 'upload.html',
                 result="ERROR! filename shouldn't be empty",
-                algs=BaseAlgorithm.AlgList
+                algs=AlgService(db).get_my_alg_ids(with_title=True)
             ))
         if file and allowed_file(file.filename):
             owner = UserService(db).get(g.user_id)
             fr = ImageUserRelationship(isOwner=True)
-            fr.image = Image(title=secure_filename(file.filename), alg=request.form['imagealglist'])
+
+            request.form.get('alg')
+            fr.image = Image(title=secure_filename(file.filename), alg=AlgService(db).get(int(request.form.get('alg'))))
             owner.images.append(fr)
             db.session.add(owner)
             db.session.commit()
             fr.image.uri = get_user_file_path(fr.image.id)
             db.session.commit()
             file.save(fr.image.uri)
-            resize_img(fr.image.uri, fr.image.uri + '.tiny')
+            resize_img(fr.image.uri, fr.image.uri + '.tiny.jpg')
             ImageService.create_label(fr.image)
             predict.delay(fr.image.id)
             return current_app.make_response(render_template(
                 'upload.html',
                 result='Upload success',
-                algs=BaseAlgorithm.AlgList
+                algs=AlgService(db).get_my_alg_ids(with_title=True)
             ))
 
 

@@ -1,4 +1,5 @@
 import os
+import ujson as json
 import numpy as np
 from flask import g
 from keras.applications.vgg16 import VGG16
@@ -7,19 +8,23 @@ from keras.layers import Dense, GlobalAveragePooling2D
 from keras.models import model_from_json
 from keras.preprocessing import image
 from keras.applications.vgg16 import preprocess_input
+
 from .base_alg import BaseAlg
 from my_app.common.constant import BaseAlgorithm, ImageState
 from my_app.foundation import db
+from my_app.service import AlgService
 
 
 class BiClassAlg(BaseAlg):
 
     def __init__(self, img):
         super(BiClassAlg, self).__init__(img)
-        self.type1 = 'type1'
-        self.type2 = 'type2'
-        self.model_weight = os.path.join(self.alg_dir, 'b_c_basic.h5')
-        self.model = os.path.join(self.alg_dir, 'b_c_basic.json')
+        alg = img.alg
+        alg_config = json.loads(alg.config)
+        self.alg = BaseAlgorithm.BiClass
+        self.labels = alg_config['labels'] if alg_config and alg and len(alg_config['labels']) == 2 else ['type1', 'type2']
+        self.model_weight = os.path.join(self.alg_dir, 'weight.h5')
+        self.model = os.path.join(self.alg_dir, 'model.json')
         self.train_data_dir = ''
 
     def create(self, save=True):
@@ -28,9 +33,10 @@ class BiClassAlg(BaseAlg):
             'alg': BaseAlgorithm.BiClass,
             'data': {
                 'key': {
-                    0: self.type1,
-                    1: self.type2,
+                    0: self.labels[0],
+                    1: self.labels[1],
                 },
+                'weight': 0,
                 'value': 0,
             }
         }
@@ -89,6 +95,8 @@ class BiClassAlg(BaseAlg):
         model.save_weights(self.model_weight)
 
     def predict(self):
+        if not self.predict_check():
+            return None
         from my_app.common.tools import file2json, json2file
         model = model_from_json(open(self.model).read())
         model.load_weights(self.model_weight)
@@ -101,20 +109,13 @@ class BiClassAlg(BaseAlg):
 
         pred = model.predict(x)
         label = file2json(self.image.uri + '.label')
+        print pred
         label['data']['value'] = round(pred[0][0])
+        label['data']['weight'] = pred[0][0]
         json2file(label, self.image.uri + '.label')
         self.image.state = ImageState.DONE_LABEL
         db.session.commit()
         return pred
-
-
-class BiClassAlgCatDog(BiClassAlg):
-
-    def __init__(self, img):
-        super(BiClassAlgCatDog, self).__init__(img)
-        self.type1 = 'cat'
-        self.type2 = 'dog'
-        self.model_weight = os.path.join(self.alg_dir, 'b_c_cat_dog.h5')
 
 
 class MulClassAlg(BaseAlg):

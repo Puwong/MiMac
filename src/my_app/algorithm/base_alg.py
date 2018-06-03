@@ -1,3 +1,4 @@
+import os
 from flask import g
 from my_app.common.constant import BaseAlgorithm
 
@@ -5,8 +6,11 @@ from my_app.common.constant import BaseAlgorithm
 class BaseAlg(object):
 
     def __init__(self, image):
-        from my_app import app_conf
-        self.alg_dir = app_conf('ALG_DIR')
+        from my_app.common.tools import get_alg_path
+        self.alg = BaseAlgorithm.Base
+        self.alg_dir = get_alg_path(image.alg)
+        self.model_weight = os.path.join(self.alg_dir, 'weight.h5')
+        self.model = os.path.join(self.alg_dir, 'model.json')
         self.image = image
 
     def create(self):
@@ -23,5 +27,9 @@ class BaseAlg(object):
     def train(self):
         pass
 
+    def predict_check(self):
+        return os.path.isfile(self.model) and os.path.isfile(self.model_weight)
+
     def predict(self):
         pass
+
