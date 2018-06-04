@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
+import hashlib
+
 from flask import current_app
 from .BaseService import BaseService
 from my_app.models import User
@@ -13,9 +15,22 @@ class UserService(BaseService):
         return super(UserService, self).get_all(with_delete=with_delete)
 
     @staticmethod
+    def generate_pwd(pwd):
+        salt = 'adkbqnbadzxchvknbw4hqwqoi092qu4upy9y4hwtjksk_xw_salt_you_never_guess_it'
+        md5_obj = hashlib.md5()
+        md5_obj.update(pwd + salt)
+        return md5_obj.hexdigest()
+
+    @staticmethod
     def add_user_dir(uid):
         from my_app import app_conf
         return os.mkdir(os.path.join(app_conf('USER_DIR'), str(uid)))
+
+    def rest_password(self, id_or_ins):
+        user = self.get(id_or_ins)
+        user.password = self.generate_pwd('123456')
+        print user.id
+        self.db.session.commit()
 
     def get_user_by_name(self, username):
         return super(UserService, self).get(username=username)

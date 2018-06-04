@@ -86,8 +86,8 @@ Team是用户的集合，team有自己的资源，在这个team中的用户对�
 # todo_list
 
 还差文章、消息、团队。
-UI方面，除了一些老的UI的升级以外，还要把错误值返回放在当页。比如login、register、new_alg、image_upload等等
-
+UI方面，除了一些老的UI的升级以外，还要把错误值返回放在当页。比如login、register、new_alg、等等
+还要加footer
 ## 开发规范
 
 ### 后端代码基于 pep8 规范进行编写

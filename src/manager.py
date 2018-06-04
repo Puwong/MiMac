@@ -21,7 +21,8 @@ manager.add_command('db', MigrateCommand)
 
 
 def _add_root():
-    root_user = User(username='root', password='123456', email='root@mimac.com', role=UserRole.ADMIN)
+    root_pwd = UserService.generate_pwd('123456')
+    root_user = User(username='root', password=root_pwd, email='root@mimac.com', role=UserRole.ADMIN)
     tr = TeamUserRelationship(isLeader=True)
     tr.team = Team(title='root_team')
 

@@ -10,7 +10,7 @@
     <meta name="author" content="">
     <link rel="icon" href="http://oo1nxbzgl.bkt.clouddn.com/mimac/icon.png">
 
-    <title>Fixed Top Navbar Example for Bootstrap</title>
+    <title>MiMac</title>
 
     <!-- Bootstrap core CSS -->
     <link href="http://oo1nxbzgl.bkt.clouddn.com/mimac/bootstrap.min.css" rel="stylesheet">
@@ -31,28 +31,39 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
+            {%if g.user_id%}
             <li><a href={{url_for('Image.images')}}>Home</a></li>
             <li><a href={{url_for('Alg.algs')}}>Algorithm</a></li>
+            <li><a href={{url_for('Alg.algs')}}>Article</a></li>
+            <li><a href={{url_for('Alg.algs')}}>Team</a></li>
+            {% if g.isAdmin %}
             <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Article <span class="caret"></span></a>
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Management <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="1">New</a></li>
+                <li><a href={{url_for("User.users")}}>User</a></li>
                   <!--<li role="separator" class="divider"></li>
                 <li class="dropdown-header">share you knowledge</li>-->
                 <li><a href="1">View</a></li>
               </ul>
             </li>
+            {%endif%}
+            {%endif%}
           </ul>
           <ul class="nav navbar-nav navbar-right">
+            {%if g.user_id%}
+            <li><a href={{url_for('Alg.algs')}}>Message</a></li>
             <li><a href={{url_for("User.user",uid=g.user_id,op='view')}}>User{%if g.user_id %} :{{g.user_id}}{%endif%}</a></li>
             <!--li class="active" -->
-              <li>
+            {%else%}
+            <li><a href={{url_for('Auth.register')}}>Register</a></li>
+            {%endif%}
+            <li>
               {% if g.user_id %}
-              <a href={{url_for('Auth.logout')}}>Logout</a>
-                {% else %}
+                <a href={{url_for('Auth.logout')}}>Logout</a>
+              {% else %}
                 <a href={{url_for('Auth.login')}}>Login</a>
-                {% endif %}
-                </li>
+              {% endif %}
+            </li>
           </ul>
         </div>
       </div>

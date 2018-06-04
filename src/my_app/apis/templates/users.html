@@ -15,9 +15,13 @@
         <td>{{user.username}}</td>
         <td>{{user.email}}</td>
         <td>{{user_role.get_desc(user.role)}}</td>
-        <td><a class="btn btn-sm btn-danger" role="button" href={{url_for('User.edit',uid=user.id,op='delete')}}>Delete</a>
-        <a class="btn btn-sm btn-danger" role="button" href={{url_for('User.edit',uid=user.id,op='delete')}}>Delete</a>
-        <a class="btn btn-sm btn-danger" role="button" href={{url_for('User.edit',uid=user.id,op='delete')}}>Delete</a></td>
+        <td><a class="btn btn-sm btn-danger" role="button" href={{url_for('User.user',uid=user.id,op='delete')}}>Delete</a>
+        {%if user.pending%}
+            <a class="btn btn-sm btn-success" role="button" href={{url_for('User.user',uid=user.id,op='unfreeze')}}>Unfreeze</a>
+        {% else %}
+            <a class="btn btn-sm btn-info" role="button" href={{url_for('User.user',uid=user.id,op='freeze')}}>Freeze</a>
+        {% endif %}
+        <a class="btn btn-sm btn-default" role="button" href={{url_for('User.user',uid=user.id,op='edit')}}>Edit</a></td>
     </tr>
     {% endfor %}
 </table>

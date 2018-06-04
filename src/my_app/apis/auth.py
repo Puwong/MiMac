@@ -41,12 +41,11 @@ class LoginAPI(Resource):
 
     def post(self):
         username = request.form.get('username', None)
-        password = request.form.get('password', None)
+        password = UserService.generate_pwd(request.form.get('password', None))
         remember = request.form.get('remember', None)
         next_url = self.args.next
         user, message = UserService(db).check_user_passwd(username, password)
         if user is None:
-            flash(message, 'danger')
             return redirect(url_for('Auth.login'))
         login_user(user, remember=remember)
         resp = current_app.make_response(
@@ -80,7 +79,7 @@ class RegisterAPI(Resource):
     def post(self):
         args = register_parser.parse_args()
         username = args.get('username')
-        password = args.get('password')
+        password = UserService.generate_pwd(args.get('password'))
         email = args.get('email')
         if exists_query(User.query.filter_by(username=username)):
             return "ERROR_DUPLICATE_USER_NAME"

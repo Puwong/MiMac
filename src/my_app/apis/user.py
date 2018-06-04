@@ -32,28 +32,42 @@ class UserAPI(Resource):
 
     @login_required
     def get(self, uid, op):
-        user = UserService(db).get(g.user_id)
-        if user.role != UserRole.ADMIN and uid != g.user_id:
-            return None, 404
-        if op == 'delete':
-            user.delete = True
-        elif op == 'freeze':
-            user.pending = True
-        elif op == 'unfreeze':
-            user.pending = False
-        elif op == 'edit':
+        me = UserService(db).get(g.user_id)
+        user = UserService(db).get(uid)
+        if me.role != UserRole.ADMIN and uid != g.user_id:
+            return "you cannot op other user since you're not an admin", 403
+        if uid == 1 and op in ['delete', 'freeze']:
+            return "fuck yourself and stay away from root", 403
+        if me.role == UserRole.ADMIN and op in ['delete', 'freeze', 'unfreeze']:
+            if op == 'delete':
+                user.delete = True
+            elif op == 'freeze':
+                user.pending = True
+            elif op == 'unfreeze':
+                user.pending = False
+            db.session.commit()
+            return current_app.make_response(render_template(
+                'users.html',
+                users=UserService(db).get_all(),
+                user_role=UserRole
+            ))
+        if op == 'edit':
             return current_app.make_response(render_template(
                 'user.html',
                 user=user,
                 user_role=UserRole,
                 edit=True
             ))
-        else:
-            return current_app.make_response(render_template(
-                'user.html',
-                user=user,
-                user_role=UserRole,
-            ))
+        elif op == 'reset_pwd':
+            UserService(db).rest_password(user)
+        return current_app.make_response(render_template(
+            'user.html',
+            user=user,
+            user_role=UserRole,
+        ))
+
+
+
 
     @login_required
     def post(self, uid, op):
