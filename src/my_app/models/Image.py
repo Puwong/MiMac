@@ -13,3 +13,7 @@ class Image(db.Model):
     delete = db.Column(db.Boolean, default=False)
     users = db.relationship("ImageUserRelationship", backref="image", lazy='dynamic')
     alg_id = db.Column(db.Integer, db.ForeignKey('alg.id'))
+
+    @property
+    def store_uri(self):
+        return self.uri + '.raw'

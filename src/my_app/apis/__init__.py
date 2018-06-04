@@ -6,12 +6,12 @@ from .image import image_bp
 from .alg import alg_bp
 
 MODULES = (
-    (user_bp, '/api'),
-    (audit_bp, '/api'),
+    (user_bp, ''),
+    (audit_bp, ''),
     (test_bp, ''),
     (alg_bp, ''),
     (static_bp, ''),
     (auth_bp, ''),
     (frontend, ''),
-    (image_bp, '/api'),
+    (image_bp, ''),
 )

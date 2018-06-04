@@ -32,7 +32,7 @@ LOGGER_DEBUG = "logger_debug.log"
 USER_DIR = PROJECT_DIR + '/user_file'
 ALG_DIR = PROJECT_DIR + '/alg_file'
 
-ALLOWED_EXTENSIONS = set(['dicm', 'png', 'jpg', 'jpeg', 'gif', 'log', 'json'])
+ALLOWED_EXTENSIONS = set(['dicm', 'dcm', 'png', 'jpg', 'jpeg', 'gif'])
 
 TRAIN_DIR = PROJECT_DIR + 'data'
 

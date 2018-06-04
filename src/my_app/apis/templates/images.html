@@ -6,16 +6,20 @@
 </div>
 <br/>
 <div class="row">
-    {% for image in images %}
-    {% if not image.delete %}
+    {% for i in images %}
+    {% if not images[i][0].delete %}
 <div class="col-xs-6 col-md-3">
-    <a href={{url_for('Image.image',image_id=image.id)}}  target=_blank class="thumbnail">
-        <img src={{url_for('Image.tiny',image_id=image.id)}}  alt="{{image.id}}"/><br>
-        <p>{{image.title}}  </p>
-        <small>Circumstance: {{image.alg.title}}</small><br>
-        <small>（{{g.image_state[image.state]}}）{{images[image]}}</small>
+    <a href={{url_for('Image.image',image_id=images[i][0].id)}}  target=_blank class="thumbnail">
+        <img src={{url_for('Image.tiny',image_id=images[i][0].id)}}  alt="{{images[i][0].id}}"/><br>
+        <p>{{images[i][0].title}}  </p>
+        <small>Circumstance: {{images[i][0].alg.title}}</small><br>
+        <small>（{{g.image_state[images[i][0].state]}}）{{images[i][1]}}</small>
     </a>
 </div>
+    {% if i%4==3 %}
+    </div>
+    <div class="row">
+    {% endif %}
     {% endif %}
     {% endfor %}
 </div>

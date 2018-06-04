@@ -1,15 +1,24 @@
 {% extends "base.html" %}
 {% block main_block %}
 <p>{{g.image_alg[image.alg.alg]}}</p>
-<div>{{result}}</div>
 {% if not action == 'rename' %}
-{{image.title}}<a href={{url_for('Image.edit',action='rename',image_id=image.id)}}>重命名</a><br>
+{{image.title}}<a href={{url_for('Image.edit',action='rename',image_id=image.id)}}>重命名</a>
 {% else %}
-<form method="post" action={{url_for('Image.edit',action='rename',image_id=image.id)}}>
-    <input type="text" name="filename" value={{image.title}} /><input type="submit"><br>
+<form method="post" action={{url_for('Image.edit',action='rename',image_id=image.id)}} class="form-inline">
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="Filename" name="filename" value={{image_name}}>
+      <div class="input-group-addon">.{{image_suffix}}</div>
+    </div>
+    <button type="submit" class="btn btn-primary">Rename confirm</button>
 </form>
 {% endif %}
-<img src={{url_for('Image.show',image_id=image.id)}}  alt="{{image.id}}"/><br>
+<a href={{url_for('Image.edit',action='delete',image_id=image.id)}}>删除</a>
+{% if not image.freeze %}
+<a href={{url_for('Image.edit',action='freeze',image_id=image.id)}}>冻结</a>
+{% else %}
+<a href={{url_for('Image.edit',action='unfreeze',image_id=image.id)}}>解冻</a>
+{% endif %}
+<br>
 {% if not image.freeze %}
     {% if action == 'label' %}
         {% if label['alg'] in (base_alg.Classification, base_alg.BiClass) %}
@@ -31,10 +40,6 @@
         {{result}}（{{g.image_state[image.state]}}）<a href={{url_for('Image.edit',action='label',image_id=image.id)}}>标注</a><br>
     {% endif %}
 {% endif %}
-<a href={{url_for('Image.edit',action='delete',image_id=image.id)}}>删除</a>
-{% if not image.freeze %}
-<a href={{url_for('Image.edit',action='freeze',image_id=image.id)}}>冻结</a>
-{% else %}
-<a href={{url_for('Image.edit',action='unfreeze',image_id=image.id)}}>解冻</a>
-{% endif %}
+
+<img src={{url_for('Image.show',image_id=image.id)}}  alt="{{image.id}}"/><br>
 {% endblock %}

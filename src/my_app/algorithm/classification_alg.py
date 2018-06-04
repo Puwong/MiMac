@@ -92,11 +92,11 @@ class BiClassAlg(BaseAlg):
     def predict(self):
         if not self.predict_check():
             return None
-        from my_app.common.tools import file2json, json2file
+        from my_app.common.tools import file2json, json2file, get_tiny_path
         model = model_from_json(open(self.model).read())
         model.load_weights(self.model_weight)
 
-        img_path = self.image.uri
+        img_path = get_tiny_path(self.image)
         img = image.load_img(img_path, target_size=(224, 224))
         x = image.img_to_array(img)
         x = np.expand_dims(x, axis=0)

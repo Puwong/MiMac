@@ -3,6 +3,7 @@ import os
 import time
 from flask import Flask, g, request
 from flask.ext.login import current_user
+
 from my_app.models import User
 from my_app.foundation import make_celery, logger, cors, csrf, db, login_manager
 from my_app import apis
@@ -112,13 +113,14 @@ def configure_foundations(app):
     """
     @app.before_request
     def before_request():
-        from my_app.common.constant import BaseAlgorithm, ImageState
+        from my_app.common.constant import BaseAlgorithm, ImageState, UserRole
+        from my_app.service import UserService
         g.user_id = current_user.id if hasattr(current_user, 'id') else None
         g.image_alg = BaseAlgorithm.AlgDict
         g.image_state = ImageState.StateDict
         now = int(time.time())
         g.TIMESTAMP = now
-
+        g.isAdmin = g.user_id and UserService(db).get(g.user_id).role == UserRole.ADMIN
         # maintain = int(Config.get_config('maintain'))
         # if maintain:
         #    abort(500)

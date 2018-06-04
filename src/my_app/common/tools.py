@@ -7,6 +7,16 @@ from my_app.service import AlgService
 from my_app.foundation import db
 
 
+def convert_file(dcm_file_path, jpg_file_path):
+    import cv2
+    import dicom
+    import numpy as np
+    dicom_img = dicom.read_file(dcm_file_path)
+    img = dicom_img.pixel_array
+    scaled_img = cv2.convertScaleAbs(img-np.min(img), alpha=(255.0 / min(np.max(img)-np.min(img), 10000)))
+    cv2.imwrite(jpg_file_path, scaled_img)
+
+
 def resize_img(from_dir, to_dir, new_size=(224,224)):
     img = Image.open(from_dir)
     img = img.resize(new_size)
@@ -54,13 +64,13 @@ def create_dir_loop(my_dir):
 
 
 def get_label_path(*args):
-    return get_file_path(*args, extension='label')
+    return get_file_path(*args, extension='jpg.label')
 
 
 def get_user_file_path(filename, user_id=None):
     if user_id is None:
         user_id = g.user_id
-    return get_file_path(user_id, filename)
+    return get_file_path(user_id, filename, extension='jpg')
 
 
 def get_file_path(*args, **kargs):

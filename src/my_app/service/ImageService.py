@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import os
+from shutil import copyfile
 from .BaseService import BaseService
 from my_app.algorithm import select_alg
 from my_app.models import Image, User
@@ -19,6 +21,21 @@ class ImageService(BaseService):
     @staticmethod
     def algorithm(image):
         return select_alg(image)(image)
+
+    def create_tiny(self, id_or_ins):
+        from my_app.common.tools import resize_img, convert_file
+        image = self.get(id_or_ins)
+        suffix = image.title.split('.')[-1]
+        print image.title
+        print image.store_uri, '\n',image.uri
+        if suffix == 'dcm':
+            convert_file(image.store_uri, image.uri)
+            resize_img(image.uri, image.uri+'.tiny.jpg')
+            return True
+        else :
+            copyfile(image.store_uri, image.uri)
+            resize_img(image.uri, image.uri + '.tiny.jpg')
+            return True
 
     def get_label_result(self, id_or_ins, with_desc=False, ignore_state=False):
         image = self.get(id_or_ins)

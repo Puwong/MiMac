@@ -62,10 +62,14 @@ class ImageEditAPI(Resource):
                 label=label
             ))
         elif action == 'rename':
+            image_name = image.title.rsplit('.', 1)[0]
+            image_suffix = image.title.rsplit('.', 1)[1]
             return current_app.make_response(render_template(
                 'image.html',
                 result=ImageService(db).get_label_result(image, with_desc=True),
                 image=image,
+                image_name=image_name,
+                image_suffix=image_suffix,
                 action='rename'
             ))
         else:
@@ -79,7 +83,7 @@ class ImageEditAPI(Resource):
     def post(self, action, image_id):
         image = ImageService(db).get(image_id)
         if action == 'rename':
-            image.title = request.form['filename']
+            image.title = request.form['filename'] + image.title.rsplit('.', 1)[1]
             db.session.commit()
         elif action == 'label':
             ImageService(db).label(image, request.form['label'])
@@ -108,9 +112,11 @@ class ImagesAPI(Resource):
     @login_required
     def get(self):
         user = UserService(db).get(g.user_id)
-        images = dict()
+        images = list()
         for i in user.images:
-            images[i.image] = ImageService(db).get_label_result(i.image, with_desc=True)
+            images.append((i.image, ImageService(db).get_label_result(i.image, with_desc=True)))
+        images = sorted(images, key=lambda x: x[0].id, reverse=True)
+        images = {i: images[i] for i in range(len(images))}
         return current_app.make_response(render_template(
             'images.html',
             images=images
@@ -159,13 +165,19 @@ class ImageUploadAPI(Resource):
             db.session.commit()
             fr.image.uri = get_user_file_path(fr.image.id)
             db.session.commit()
-            file.save(fr.image.uri)
-            resize_img(fr.image.uri, fr.image.uri + '.tiny.jpg')
+            file.save(fr.image.store_uri)
+            ImageService(db).create_tiny(fr.image)
             ImageService.create_label(fr.image)
             predict(fr.image.id)
             return current_app.make_response(render_template(
                 'upload.html',
                 result='Upload success',
+                algs=AlgService(db).get_my_alg_ids(with_title=True)
+            ))
+        else:
+            return current_app.make_response(render_template(
+                'upload.html',
+                result="We only support dcm, dicm, png, jpg, jpeg, gif suffix now",
                 algs=AlgService(db).get_my_alg_ids(with_title=True)
             ))
 
