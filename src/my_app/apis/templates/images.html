@@ -9,7 +9,7 @@
     {% for i in images %}
     {% if not images[i][0].delete %}
 <div class="col-xs-6 col-md-3">
-    <a href={{url_for('Image.image',image_id=images[i][0].id)}}  target=_blank class="thumbnail">
+    <a href={{url_for('Image.image',image_id=images[i][0].id)}} class="thumbnail">
         <img src={{url_for('Image.tiny',image_id=images[i][0].id)}}  alt="{{images[i][0].id}}"/><br>
         <p>{{images[i][0].title}}  </p>
         <small>Circumstance: {{images[i][0].alg.title}}</small><br>

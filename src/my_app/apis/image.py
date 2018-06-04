@@ -48,6 +48,7 @@ class ImageEditAPI(Resource):
             image.freeze = False
         elif action == 'delete':
             image.delete = True
+            db.session.commit()
             return current_app.make_response(redirect(url_for('Image.images')))
         db.session.commit()
         if action == 'label':
@@ -83,7 +84,7 @@ class ImageEditAPI(Resource):
     def post(self, action, image_id):
         image = ImageService(db).get(image_id)
         if action == 'rename':
-            image.title = request.form['filename'] + image.title.rsplit('.', 1)[1]
+            image.title = request.form['filename'] + '.' + image.title.rsplit('.', 1)[1]
             db.session.commit()
         elif action == 'label':
             ImageService(db).label(image, request.form['label'])
@@ -114,7 +115,8 @@ class ImagesAPI(Resource):
         user = UserService(db).get(g.user_id)
         images = list()
         for i in user.images:
-            images.append((i.image, ImageService(db).get_label_result(i.image, with_desc=True)))
+            if not i.image.delete:
+                images.append((i.image, ImageService(db).get_label_result(i.image, with_desc=True)))
         images = sorted(images, key=lambda x: x[0].id, reverse=True)
         images = {i: images[i] for i in range(len(images))}
         return current_app.make_response(render_template(
