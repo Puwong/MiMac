@@ -1,33 +1,23 @@
 {% extends "base.html" %}
 {% block main_block %}
 
-<div class="row">
-    {% if g.isAdmin %}
-    <a class="btn btn-default col-md-4" role="button" href={{url_for('Alg.new_alg')}}>New circumstances </a>
-    {% endif %}
-    <form id="add2user" class="form-inline blockquote-reverse" method="post" action={{url_for('Alg.add2user')}}>
-        <input type="text" name="a_id" class="form-control" placeholder="circumstance id" form="add2user">
-        <button class="btn  btn-primary" type="submit" form="add2user">Add it to me</button>
-    </form>
-</div>
-<br><br>
 <table class="table table-hover">
     <tr>
         <td>id</td>
-        <td>base algorithm</td>
-        <td>circumstances</td>
-        {% if g.isAdmin %}
+        <td>username</td>
+        <td>email</td>
+        <td>role</td>
         <td>op</td>
-        {% endif %}
     </tr>
-    {% for alg in algs %}
-    <tr {% if alg.id in my_algs %} class="success"{% endif %}>
-        <td>{{alg.id}}</td>
-        <td>{{base_alg[alg.base]}}</td>
-        <td>{{alg.title}}</td>
-        {% if g.isAdmin %}
-        <td><a class="btn btn-sm btn-danger" role="button" href={{url_for('Alg.del_alg',id=alg.id)}}>Delete</a></td>
-        {% endif %}
+    {% for user in users %}
+    <tr {% if user.role == user_role.ADMIN %} class="success"{% endif %}>
+        <td>{{user.id}}</td>
+        <td>{{user.username}}</td>
+        <td>{{user.email}}</td>
+        <td>{{user_role.get_desc(user.role)}}</td>
+        <td><a class="btn btn-sm btn-danger" role="button" href={{url_for('User.edit',uid=user.id,op='delete')}}>Delete</a>
+        <a class="btn btn-sm btn-danger" role="button" href={{url_for('User.edit',uid=user.id,op='delete')}}>Delete</a>
+        <a class="btn btn-sm btn-danger" role="button" href={{url_for('User.edit',uid=user.id,op='delete')}}>Delete</a></td>
     </tr>
     {% endfor %}
 </table>

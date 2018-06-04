@@ -82,7 +82,6 @@ class RegisterAPI(Resource):
         username = args.get('username')
         password = args.get('password')
         email = args.get('email')
-        print username
         if exists_query(User.query.filter_by(username=username)):
             return "ERROR_DUPLICATE_USER_NAME"
         user = User(

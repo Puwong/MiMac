@@ -7,6 +7,12 @@ class BaseService(object):
         self.db = db
         self.model = getattr(self, 'model', None)
 
+    def get_all(self, with_delete=True):
+        query = self.model.query
+        if not with_delete:
+            query = query.filter(self.model.delete==False)
+        return query.all()
+
     def get_by(self, *args, **kwargs):
         model = self.model
 

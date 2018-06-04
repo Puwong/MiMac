@@ -5,6 +5,7 @@ from flask_restful import Api, Resource
 from flask_login import login_required
 
 from my_app.foundation import csrf, db
+from my_app.common.db_helper import exists_query
 from my_app.common.constant import BaseAlgorithm, UserRole
 from my_app.models import Alg, AlgUserRelationship
 from my_app.service import AlgService, UserService
@@ -26,7 +27,6 @@ class AlgsAPI(Resource):
             algs=AlgService(db).get_all(),
             base_alg=BaseAlgorithm.AlgDict,
             my_algs=AlgService(db).get_my_alg_ids(),
-            isAdmin=(UserService(db).get(g.user_id).role == UserRole.ADMIN)
         ))
 
 
@@ -68,6 +68,8 @@ class NewAlgAPI(Resource):
         title = request.form.get('title')
         base = request.form.get('base')
         labels = request.form.get('labels').split(' ')
+        if exists_query(Alg.query.filter_by(title=title)):
+            return "There is already a algorithm named {}".format(title)
         AlgService(db).create(title=title, base=base, config=json.dumps({
             'class_cnt': len(labels),
             'labels': labels
@@ -77,37 +79,10 @@ class NewAlgAPI(Resource):
         )
 
 
-class AlgAPI(Resource):
-
-    @login_required
-    def get(self):
-        return current_app.make_response(render_template(
-            'algs.html',
-            alg=Alg.query.all(),
-            base_alg=BaseAlgorithm.AlgDict,
-        ))
-
-    @login_required
-    def post(self):
-        title = request.form.get('title')
-        base = request.form.get('base')
-        alg = Alg(title=title, base=base)
-        db.session.commit()
-        return current_app.make_response(
-            redirect(url_for('Alg.algs'))
-        )
-
-
 alg_api.add_resource(
     AlgsAPI,
     '/algs',
     endpoint='algs'
-)
-
-alg_api.add_resource(
-    AlgAPI,
-    '/algs/<int:id>',
-    endpoint='alg'
 )
 
 alg_api.add_resource(

@@ -9,6 +9,9 @@ from my_app.common.constant import FLASH_MESSAGES
 class UserService(BaseService):
     model = User
 
+    def get_all(self, with_delete=False):
+        return super(UserService, self).get_all(with_delete=with_delete)
+
     @staticmethod
     def add_user_dir(uid):
         from my_app import app_conf

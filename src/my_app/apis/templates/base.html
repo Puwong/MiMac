@@ -44,7 +44,7 @@
             </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href={{url_for("User.user",uid=g.user_id)}}>User{%if g.user_id %} :{{g.user_id}}{%endif%}</a></li>
+            <li><a href={{url_for("User.user",uid=g.user_id,op='view')}}>User{%if g.user_id %} :{{g.user_id}}{%endif%}</a></li>
             <!--li class="active" -->
               <li>
               {% if g.user_id %}
