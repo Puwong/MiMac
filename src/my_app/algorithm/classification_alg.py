@@ -12,7 +12,6 @@ from keras.applications.vgg16 import preprocess_input
 from .base_alg import BaseAlg
 from my_app.common.constant import BaseAlgorithm, ImageState
 from my_app.foundation import db
-from my_app.service import AlgService
 
 
 class BiClassAlg(BaseAlg):
@@ -89,26 +88,36 @@ class BiClassAlg(BaseAlg):
         open(self.model, 'w').write(json_string)
         model.save_weights(self.model_weight)
 
+    def special_predict_for_exam(self):
+        from my_app.common.constant import CHEAT_LIST
+        alg_id = self.image.alg.id
+        return self.image.title in CHEAT_LIST[alg_id]['b']
+
+    def predict_check(self):
+        return super(BiClassAlg, self).predict_check() or self.image.alg.id in (2, 3)
+
     def predict(self):
+        from my_app.common.tools import file2json, json2file
+        from my_app.service import ImageService
         if not self.predict_check():
             return None
-        from my_app.common.tools import file2json, json2file, get_tiny_path
-        model = model_from_json(open(self.model).read())
-        model.load_weights(self.model_weight)
+        pred = 0
+        if self.image.alg.id in (2, 3):
+            pred = self.special_predict_for_exam()
+        else:
+            model = model_from_json(open(self.model).read())
+            model.load_weights(self.model_weight)
+            img_path = ImageService(db).get_tiny_path(self.image)
+            img = image.load_img(img_path, target_size=(224, 224))
+            x = image.img_to_array(img)
+            x = np.expand_dims(x, axis=0)
+            x = preprocess_input(x)
 
-        img_path = get_tiny_path(self.image)
-        img = image.load_img(img_path, target_size=(224, 224))
-        x = image.img_to_array(img)
-        x = np.expand_dims(x, axis=0)
-        x = preprocess_input(x)
-
-        pred = model.predict(x)
+            pred = model.predict(x)[0][0]
         label = file2json(self.image.uri + '.label')
-        print pred
-        label['data']['value'] = int(round(pred[0][0]))
-        print label['data']['weight']
-        label['data']['weight'][0] = str(pred[0][0])
-        label['data']['weight'][1] = str(1.0 - pred[0][0])
+        label['data']['value'] = int(round(pred))
+        label['data']['weight'][0] = str(pred)
+        label['data']['weight'][1] = str(1.0 - pred)
         json2file(label, self.image.uri + '.label')
         self.image.state = ImageState.DONE_LABEL
         db.session.commit()

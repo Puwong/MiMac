@@ -33,7 +33,7 @@ class ImageTinyAPI(Resource):
         if not permission_check(image_id):
             return "Permission Deny !"
         image = ImageService(db).get(image_id)
-        return send_file(image.uri + '.tiny.jpg', attachment_filename=image.title)
+        return send_file(ImageService(db).get_tiny_path(image), attachment_filename=image.title)
 
 
 class ImageEditAPI(Resource):

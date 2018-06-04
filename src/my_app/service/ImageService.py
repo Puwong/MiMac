@@ -22,6 +22,10 @@ class ImageService(BaseService):
     def algorithm(image):
         return select_alg(image)(image)
 
+    def get_tiny_path(self, id_or_ins):
+        image = self.get(id_or_ins)
+        return image.uri + '.tiny.jpg'
+
     def create_tiny(self, id_or_ins):
         from my_app.common.tools import resize_img, convert_file
         image = self.get(id_or_ins)
@@ -30,11 +34,11 @@ class ImageService(BaseService):
         print image.store_uri, '\n',image.uri
         if suffix == 'dcm':
             convert_file(image.store_uri, image.uri)
-            resize_img(image.uri, image.uri+'.tiny.jpg')
+            resize_img(image.uri, self.get_tiny_path(image))
             return True
         else :
             copyfile(image.store_uri, image.uri)
-            resize_img(image.uri, image.uri + '.tiny.jpg')
+            resize_img(image.uri, self.get_tiny_path(image))
             return True
 
     def get_label_result(self, id_or_ins, with_desc=False, ignore_state=False):

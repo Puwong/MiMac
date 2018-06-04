@@ -83,7 +83,3 @@ def get_file_path(*args, **kargs):
 def get_alg_path(id_or_ins):
     return os.path.join(app_conf('ALG_DIR'), str(AlgService(db).get(id_or_ins).id))
 
-
-def get_tiny_path(img_id):
-    return get_file_path(g.user_id, str(img_id)+'.tiny.jpg')
-
