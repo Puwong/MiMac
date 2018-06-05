@@ -2,6 +2,7 @@
 
 import os
 from celery.schedules import crontab
+from datetime import timedelta
 
 
 PROJECT_DIR = "/Users/megvii/MiMac"
@@ -61,8 +62,8 @@ CELERYBEAT_SCHEDULE = {
         'schedule': crontab(hour=11, minute=0, day_of_week=[1, 2, 3, 4, 5]),
     },
     'schedule-train': {
-        'task': 'my_app.tasks.train',
-        'schedule': crontab(hour=0, minute=0, day_of_week=[0, 1, 2, 3, 4, 5, 6]),
+        'task': 'my_app.tasks.test_cron_2',
+        'schedule': timedelta(days=30),
     },
 }
 '''

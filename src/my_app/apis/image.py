@@ -170,7 +170,7 @@ class ImageUploadAPI(Resource):
             file.save(fr.image.store_uri)
             ImageService(db).create_tiny(fr.image)
             ImageService.create_label(fr.image)
-            predict(fr.image.id)
+            predict.delay(fr.image.id)
             return current_app.make_response(render_template(
                 'upload.html',
                 result='Upload success',

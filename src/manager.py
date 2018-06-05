@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
-import os
+import sys
+
+if 'threading' in sys.modules:  # noqa
+    raise Exception('threading module loaded before patching!')  # noqa
+import gevent.monkey
+gevent.monkey.patch_all()  # noqa
+
 import ujson as json
 from shutil import copyfile
 from flask.ext.script import Server, Shell, Manager, prompt_bool
