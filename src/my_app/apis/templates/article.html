@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block main_block %}
+<h1>{{article['title']}}</h1>
+<pre>{{article['text']}}</pre>
+<a class="btn btn-lg btn-primary" href={{url_for('Article.article',aid=article['id'],op='edit')}} role="button">Edit &raquo;</a>
+{% endblock %}

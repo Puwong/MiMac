@@ -1,3 +1,4 @@
+import ujson as json
 from numbers import Integral
 
 
@@ -6,6 +7,24 @@ class BaseService(object):
     def __init__(self, db):
         self.db = db
         self.model = getattr(self, 'model', None)
+        self.int_keys = getattr(self, 'int_keys', [])
+        self.json_keys = getattr(self, 'json_keys', [])
+
+    def get_info(self, *args, **kwargs):
+        item = self.get(*args, **kwargs)
+        info = {}
+        if item:
+            model_keys = self.model.__table__.columns.keys()
+            for key in model_keys:
+                if key in self.json_keys:
+                    value = json.loads(getattr(item, key))
+                else:
+                    value = getattr(item, key, None)
+                info[key] = value
+        for key in self.int_keys:
+            if key in info:
+                info[key] = int(info[key] or 0)
+        return info
 
     def get_all(self, with_delete=True):
         query = self.model.query

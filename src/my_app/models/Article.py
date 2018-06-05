@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import time
 
 from my_app.foundation import db
 from .TextNode import TextNode
@@ -12,4 +13,8 @@ class Article(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     title = db.Column(db.String(128))
     text_nodes = db.relationship("TextNode", backref="article", lazy='dynamic')
+    delete = db.Column(db.Boolean, default=False)
+    visitor_count = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.Integer, default=time.time)
+    modified_at = db.Column(db.Integer, default=time.time, onupdate=time.time)
 
