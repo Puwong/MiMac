@@ -46,7 +46,7 @@ class Add2UserAPI(Resource):
 
     @login_required
     def post(self):
-        a_ids = request.form.get('a_id').split(',')
+        a_ids = request.form.get('a_id').split(' ')
         for a_id in a_ids:
             AlgService(db).add2user(int(a_id))
         return current_app.make_response(

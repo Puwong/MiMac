@@ -6,7 +6,7 @@
     <a class="btn btn-default col-md-4" role="button" href={{url_for('Alg.new_alg')}}>New circumstances </a>
     {% endif %}
     <form id="add2user" class="form-inline blockquote-reverse" method="post" action={{url_for('Alg.add2user')}}>
-        <input type="text" name="a_id" class="form-control" placeholder="circumstance id" form="add2user">
+        <input type="text" name="a_id" class="form-control" placeholder="circumstance ids separated by space" form="add2user">
         <button class="btn  btn-primary" type="submit" form="add2user">Add it to me</button>
     </form>
 </div>
