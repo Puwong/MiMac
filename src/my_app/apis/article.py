@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, g, render_template, current_app, request, url_for
+from flask import Blueprint, g, render_template, current_app, request
 from flask_login import login_required
 from flask_restful import Api, Resource
 
 from my_app.foundation import csrf, db
-from my_app.service import ArticleService, UserService
-from my_app.models import Article
+from my_app.service import ArticleService
 
 
 article_bp = Blueprint('Article', __name__)
