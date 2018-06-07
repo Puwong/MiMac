@@ -89,18 +89,21 @@ class TeamAPI(Resource):
 
 
 class TeamAddUserAPI(Resource):
-
+    @hack_alert(permission_check)
     @login_required
     def get(self, tid, uid):
         TeamService(db).add_user(tid, uid)
         return TeamAPI().get(op='view', tid=tid)
 
+    @hack_alert(permission_check)
     @login_required
     def post(self, tid, uid):
         uids = [int(i) for i in request.form.get('uids').split(' ')]
         for uid in uids:
             TeamService(db).add_user(tid=tid, uid=uid)
-        return TeamAPI().get(op='view', tid=tid)
+        return current_app.make_response(
+            redirect(url_for('Team.team', op='view', tid=tid))
+        )
 
 
 class TeamDelUserAPI(Resource):
