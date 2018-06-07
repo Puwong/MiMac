@@ -18,7 +18,7 @@ class ArticlesAPI(Resource):
     def get(self):
         return current_app.make_response(render_template(
             'articles.html',
-            articles=ArticleService(db).get_all(with_delete=False),
+            articles=ArticleService(db).get_all(),
         ))
 
 
@@ -37,7 +37,7 @@ class NewArticleAPI(Resource):
     @login_required
     def get(self):
         return current_app.make_response(render_template(
-            'article_new.html',
+            'article.html',
         ))
 
     @login_required
@@ -50,6 +50,7 @@ class NewArticleAPI(Resource):
         info = ArticleService(db).get_info(article, with_text=True)
         return current_app.make_response(render_template(
             'article.html',
+            show=True,
             article=info
         ))
 
@@ -64,16 +65,21 @@ class ArticleAPI(Resource):
             db.session.commit()
             info = ArticleService(db).get_info(article, with_text=True)
             return current_app.make_response(render_template(
-                'article_new.html',
+                'article.html',
                 article=info
             ))
         elif op == 'delete':
             article = ArticleService(db).get(aid)
             article.delete = True
             db.session.commit()
+            return current_app.make_response(render_template(
+                'articles.html',
+                articles=ArticleService(db).get_all(),
+            ))
         return current_app.make_response(render_template(
-            'articles.html',
-            articles=ArticleService(db).get_all(with_delete=False),
+            'article.html',
+            show=True,
+            article=ArticleService(db).get_info(aid, with_text=True),
         ))
 
     @login_required
@@ -87,6 +93,7 @@ class ArticleAPI(Resource):
             info = ArticleService(db).get_info(article, with_text=True)
             return current_app.make_response(render_template(
                 'article.html',
+                show=True,
                 article=info
             ))
 

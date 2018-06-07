@@ -5,6 +5,7 @@ from .base import test_bp, static_bp
 from .image import image_bp
 from .alg import alg_bp
 from .article import article_bp
+from .team import team_bp
 
 MODULES = (
     (user_bp, ''),
@@ -16,4 +17,5 @@ MODULES = (
     (frontend, ''),
     (image_bp, ''),
     (article_bp, ''),
+    (team_bp, ''),
 )

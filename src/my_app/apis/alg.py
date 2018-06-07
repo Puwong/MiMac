@@ -20,8 +20,6 @@ class AlgsAPI(Resource):
 
     @login_required
     def get(self):
-        print AlgService(db).get_all()
-        print AlgService(db).get_my_alg_ids()
         return current_app.make_response(render_template(
             'algs.html',
             algs=AlgService(db).get_all(),

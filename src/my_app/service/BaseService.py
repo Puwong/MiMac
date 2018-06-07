@@ -26,10 +26,11 @@ class BaseService(object):
                 info[key] = int(info[key] or 0)
         return info
 
-    def get_all(self, with_delete=True):
+    def get_all(self, **kwargs):
         query = self.model.query
-        if not with_delete:
-            query = query.filter(self.model.delete==False)
+        for key in kwargs:
+            if hasattr(self.model, key):
+                query = query.filter(getattr(self.model, key) == kwargs[key])
         return query.all()
 
     def get_by(self, *args, **kwargs):

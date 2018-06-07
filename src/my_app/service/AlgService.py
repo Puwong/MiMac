@@ -9,8 +9,8 @@ class AlgService(BaseService):
 
     model = Alg
 
-    def get_all(self, with_delete=False):
-        return super(AlgService, self).get_all(with_delete=with_delete)
+    def get_all(self, **kwargs):
+        return super(AlgService, self).get_all(delete=False, **kwargs)
 
     def get_my_alg_ids(self, with_title=False):
         from .UserService import UserService

@@ -1,18 +1,31 @@
 # -*- coding: utf-8 -*-
 import os
 import hashlib
+from functools import wraps
 
-from flask import current_app
+from flask import current_app, g
 from .BaseService import BaseService
 from my_app.models import User
-from my_app.common.constant import FLASH_MESSAGES
+from my_app.common.constant import FLASH_MESSAGES, UserRole
+
+
+def hack_alert(check):
+    def hack_alert_inner(func):
+        @wraps(func)
+        def decorated_view(*args, **kwargs):
+            if check(**kwargs) or UserService.i_am_admin():
+                return func(*args, **kwargs)
+            else:
+                return "Please don't try to hack me"
+        return decorated_view
+    return hack_alert_inner
 
 
 class UserService(BaseService):
     model = User
 
-    def get_all(self, with_delete=False):
-        return super(UserService, self).get_all(with_delete=with_delete)
+    def get_all(self, **kwargs):
+        return super(UserService, self).get_all(delete=False, **kwargs)
 
     @staticmethod
     def generate_pwd(pwd):
@@ -25,6 +38,10 @@ class UserService(BaseService):
     def add_user_dir(uid):
         from my_app import app_conf
         return os.mkdir(os.path.join(app_conf('USER_DIR'), str(uid)))
+
+    @staticmethod
+    def i_am_admin():
+        return User.query.get(g.user_id).role == UserRole.ADMIN
 
     def rest_password(self, id_or_ins):
         user = self.get(id_or_ins)

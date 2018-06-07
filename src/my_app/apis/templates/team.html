@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block main_block %}
+<form class="form-horizontal" id="teamform" action={%if new%}{{url_for('Team.new')}}{%else%}{{url_for('Team.team',tid=team.id,op='edit')}}{%endif%} method="post">
+  {%if not (edit or new)%}<fieldset disabled>{%endif%}
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Team Title</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" name="title" placeholder="Name for this team" {%if team%}value={{team.title}}{%endif%}>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Description </label>
+    <div class="col-sm-10">
+        <textarea name="desc" form="teamform" class="form-control" rows="5" placeholder="Input what this team for"> {%if team%}{{team.desc}}{%endif%}</textarea>
+    </div>
+  </div>
+  {%if not (edit or new)%}</fieldset>{%endif%}
+</form>
+<div class="col-sm-offset-2 col-sm-10">
+    {%if edit or new%}
+      <button type="submit" class="btn btn-default" form="teamform">{%if new%}Create{%else%}Edit{%endif%} </button>
+    {%else%}
+    <a class="btn btn-primary col-md-4" href={{url_for('Team.team',tid=team.id,op='edit')}} role="button">Edit &raquo;</a>
+    <form id="add_user" class="form-inline blockquote-reverse" method="post" action={{url_for('Team.add_user',tid=team.id,uid=0)}}>
+        <input type="text" name="uids" class="form-control" placeholder="user ids separated by space" form="add_user">
+        <button class="btn  btn-primary" type="submit" form="add_user">Add them to this team</button>
+    </form>
+    {%endif%}
+</div>
+{% if not new and not edit%}
+<table class="table table-hover">
+    <tr>
+        <td>id</td>
+        <td>username</td>
+        <td>email</td>
+        <td>role</td>
+        {%if manage%}
+        <td>op</td>
+        {%endif%}
+    </tr>
+    {% for user in team.users %}
+    <tr>
+        <td>{{user.user.id}}</td>
+        <td>{{user.user.username}}</td>
+        <td>{{user.user.email}}</td>
+        <td>{{user.isLeader}}</td>
+        {%if isLeader%}
+        <td><a class="btn btn-sm btn-danger" role="button" href={{url_for('Team.del_user',tid=team.id,uid=user.user.id)}}>Remove</a></td>
+        {%endif%}
+    </tr>
+    {% endfor %}
+</table>
+{%endif%}
+{% endblock %}

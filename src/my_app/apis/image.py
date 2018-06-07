@@ -3,7 +3,7 @@ from flask_restful import Api, Resource
 from flask_login import login_required
 from werkzeug.utils import secure_filename
 from my_app.foundation import csrf, db
-from my_app.service import UserService, ImageService, AlgService
+from my_app.service import UserService, ImageService, AlgService, hack_alert
 from my_app.models import Image, ImageUserRelationship
 from my_app.common.constant import BaseAlgorithm
 
@@ -19,28 +19,25 @@ def permission_check(image_id):
 
 
 class ImageShowAPI(Resource):
+    @hack_alert(permission_check)
     @login_required
     def get(self, image_id):
-        if not permission_check(image_id):
-            return "Permission Deny !"
         image = ImageService(db).get(image_id)
         return send_file(image.uri, attachment_filename=image.title)
 
 
 class ImageTinyAPI(Resource):
+    @hack_alert(permission_check)
     @login_required
     def get(self, image_id):
-        if not permission_check(image_id):
-            return "Permission Deny !"
         image = ImageService(db).get(image_id)
         return send_file(ImageService(db).get_tiny_path(image), attachment_filename=image.title)
 
 
 class ImageEditAPI(Resource):
+    @hack_alert(permission_check)
     @login_required
     def get(self, action, image_id):
-        if not permission_check(image_id):
-            return "Permission Deny !"
         image = ImageService(db).get(image_id)
         if action == 'freeze':
             image.freeze = True
@@ -96,10 +93,9 @@ class ImageEditAPI(Resource):
 
 
 class ImageAPI(Resource):
+    @hack_alert(permission_check)
     @login_required
     def get(self, image_id):
-        if not permission_check(image_id):
-            return "Permission Deny !"
         image = ImageService(db).get(image_id)
         return current_app.make_response(render_template(
             'image.html',

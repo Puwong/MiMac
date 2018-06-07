@@ -66,9 +66,6 @@ class UserAPI(Resource):
             user_role=UserRole,
         ))
 
-
-
-
     @login_required
     def post(self, uid, op):
         me = UserService(db).get(g.user_id)
@@ -77,7 +74,7 @@ class UserAPI(Resource):
         username = request.form.get('username')
         email = request.form.get('email')
         role = request.form.get('role')
-        if me.role != UserRole.ADMIN :
+        if me.role != UserRole.ADMIN:
             role = UserRole.NORMAL
         if uid == 1:
             role = UserRole.ADMIN  # root must be role

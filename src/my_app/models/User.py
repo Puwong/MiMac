@@ -15,7 +15,7 @@ class User(db.Model, UserMixin):
     delete = db.Column(db.Boolean, nullable=False, default=False)
     pending = db.Column(db.Boolean, nullable=False, default=False)
 
-    articles = db.relationship("Article", backref="user", lazy='dynamic')
+    articles = db.relationship("Article", backref="owner", lazy='dynamic')
     algs = db.relationship('AlgUserRelationship', backref='user', lazy='dynamic')
     teams = db.relationship("TeamUserRelationship", backref="user", lazy='dynamic')
     my_teams = db.relationship("Team", backref="owner", lazy='dynamic')

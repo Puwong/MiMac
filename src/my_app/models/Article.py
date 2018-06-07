@@ -10,7 +10,7 @@ class Article(db.Model):
     # 题目限制 60 个汉字，120 个字符
     # 一段文章的限制为 10000 个汉字
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     title = db.Column(db.String(128))
     text_nodes = db.relationship("TextNode", backref="article", lazy='dynamic')
     delete = db.Column(db.Boolean, default=False)

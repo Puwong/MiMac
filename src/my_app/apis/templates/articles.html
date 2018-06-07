@@ -14,10 +14,10 @@
         {% endif %}
     </tr>
     {% for article in articles %}
-    <tr {% if article.user.id == g.user_id %} class="info"{% endif %}>
+    <tr {% if article.owner.id == g.user_id %} class="info"{% endif %}>
         <td>{{article.id}}</td>
         <td>{{article.title}}</td>
-        <td>{{article.user.username}}</td>
+        <td>{{article.owner.username}}</td>
         {% if g.isAdmin %}
         <td><a class="btn btn-sm btn-danger" role="button" href={{url_for('Article.article',aid=article.id,op='delete')}}>Delete</a></td>
         {% endif %}
