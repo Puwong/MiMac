@@ -57,15 +57,19 @@ class BaseService(object):
             query = query.order_by(*_sorts)
         return query, _sorts
 
+    def query_update(self, query, **kwargs):
+        if 'sort' in kwargs.keys():
+            query, _ = self.apply_sorts(query, kwargs['sort'])
+        if 'search' in kwargs.keys():
+            query = self.apply_search(query, kwargs['search'])
+        return query
+
     def get_all(self, **kwargs):
         query = self.model.query
         for key in kwargs:
             if hasattr(self.model, key):
                 query = query.filter(getattr(self.model, key) == kwargs[key])
-        if 'sort' in kwargs.keys():
-            query, _ = self.apply_sorts(query, kwargs['sort'])
-        if 'search' in kwargs.keys():
-            query = self.apply_search(query, kwargs['search'])
+        query = self.query_update(query, **kwargs)
         return query.all()
 
     def get_by(self, *args, **kwargs):
@@ -82,7 +86,8 @@ class BaseService(object):
         else:
             if len(kwargs) == 0:
                 return None
-        query = model.query
+
+        query = self.query_update(model.query, **kwargs)
         for key in kwargs:
             if hasattr(model, key):
                 query = query.filter(getattr(model, key) == kwargs[key])
