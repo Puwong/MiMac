@@ -6,6 +6,7 @@ from .image import image_bp
 from .alg import alg_bp
 from .article import article_bp
 from .team import team_bp
+from .message import message_bp
 
 MODULES = (
     (user_bp, ''),
@@ -18,4 +19,5 @@ MODULES = (
     (image_bp, ''),
     (article_bp, ''),
     (team_bp, ''),
+    (message_bp, ''),
 )

@@ -1,9 +1,7 @@
 from flask import g
 from .BaseService import BaseService
 from .UserService import UserService
-from .TeamUserRelationshipService import TeamUserRelationshipService
 from my_app.models import Team, TeamUserRelationship
-from my_app.common.db_helper import exists_query
 
 
 class TeamService(BaseService):
@@ -52,3 +50,7 @@ class TeamService(BaseService):
         self.db.session.delete(rs)
         self.db.session.commit()
         return True
+
+
+class TeamUserRelationshipService(BaseService):
+    model = TeamUserRelationship

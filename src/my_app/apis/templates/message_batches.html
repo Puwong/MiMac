@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block main_block %}
+<div class="row">
+    <a class="btn btn-default col-md-4" role="button" href={{url_for('Team.new')}}>New Team </a>
+</div>
+<br><br>
+<table class="table table-hover">
+    <tr>
+        <td>id</td>
+        <td>name</td>
+        <td>op</td>
+    </tr>
+    {% for batch in batches %}
+    <tr>
+        <td>{{batch.id}}</td>
+        <td>{{batch.title}}</td>
+        <td><a class="btn btn-sm btn-default" role="button" href={{url_for('Message.messages',bid=batch.id)}}>View</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -61,7 +61,7 @@
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {%if g.user_id%}
-            <li><a href={{url_for('Alg.algs')}}>Message</a></li>
+            <li><a href={{url_for('Message.batches')}}>Message</a></li>
             <li><a href={{url_for("User.user",uid=g.user_id,op='view')}}>User{%if g.user_id %} :{{g.user_id}}{%endif%}</a></li>
             <!--li class="active" -->
             {%else%}

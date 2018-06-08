@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block main_block %}
+<div class="row">
+    Demo
+</div>
+<br><br>
+<div class="row">
+<div class="bg-success col-md-11">
+<div class="container">
+<blockquote>
+<p>I love you</p>
+<small>2018.01.01 23:59:59</small>
+</blockquote>
+</div>
+</div>
+</div>
+<br>
+<div class="row">
+<div class="bg-info col-md-11 col-md-offset-1 row">
+<div class="container">
+<blockquote class="blockquote-reverse">
+<p>I love you too !!!</p>
+<small>2018.01.02 00:00:00</small>
+</blockquote>
+</div>
+</div>
+</div>
+{% for message in messages %}
+<div class="row">
+<div class="bg-success col-md-11 {%if message.from_user_id != g.user_id%}col-md-offset-1{%endif%}">
+<div class="container">
+<blockquote {%if message.from_user_id != g.user_id%}class="blockquote-reverse"{%endif%}>
+<p>{{message.context}}</p>
+<small>{{message.created_at}}</small>
+</blockquote>
+</div>
+</div>
+</div>
+<br><br><br><br>
+{% endfor %}
+{% endblock %}

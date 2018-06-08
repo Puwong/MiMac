@@ -22,6 +22,22 @@ class ImageService(BaseService):
     def algorithm(image):
         return select_alg(image)(image)
 
+    search_fields = ['task_pools']
+
+    @classmethod
+    def prepare_search_task_pools(cls, search):
+        print search
+        fuzzy_filters = cls.build_fuzzy_searcher(search, [TaskPool], fields=['id', 'title'])
+        fuzzy_filters = cls.build_fuzzy_searcher(search, [User], fuzzy_filters=fuzzy_filters, fields=['username'])
+
+        projects = cls.model.query.outerjoin(
+            TaskPoolUser, TaskPool.id == TaskPoolUser.task_pool_id
+        ).outerjoin(
+            User, User.id == TaskPoolUser.user_id
+        ).filter(or_(*fuzzy_filters)).group_by(cls.model.id).with_entities(cls.model.id)
+        ids = [project[0] for project in projects]
+        return [cls.model.id.in_(ids)] if ids else []
+
     def get_tiny_path(self, id_or_ins):
         image = self.get(id_or_ins)
         return image.uri + '.tiny.jpg'
