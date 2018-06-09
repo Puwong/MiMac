@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 {% block main_block %}
 <div class="row">
-    <a class="btn btn-default col-md-4" role="button" href={{url_for('Article.new')}}>New Article </a>
+    <a class="btn btn-primary col-md-4" role="button" href={{url_for('Article.new')}}>New Article </a>
+    {%if all%}
+    <a class="btn btn-default col-md-4 col-md-offset-4" role="button" href={{url_for('Article.mine')}}>My Articles </a>
+    {%else%}
+    <a class="btn btn-default col-md-4 col-md-offset-4" role="button" href={{url_for('Article.articles')}}>All Articles </a>
+    {%endif%}
 </div>
 <br><br>
 <table class="table table-hover">

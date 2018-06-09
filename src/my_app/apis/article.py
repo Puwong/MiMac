@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, g, render_template, current_app, request
+from flask import Blueprint, g, render_template, current_app, request, redirect, url_for
 from flask_login import login_required
 from flask_restful import Api, Resource
 
@@ -19,7 +19,12 @@ class ArticlesAPI(Resource):
         return current_app.make_response(render_template(
             'articles.html',
             articles=ArticleService(db).get_all(),
+            all=True
         ))
+
+    @login_required
+    def post(self):
+        return self.get()
 
 
 class MyArticlesAPI(Resource):
@@ -30,6 +35,10 @@ class MyArticlesAPI(Resource):
             'articles.html',
             articles=ArticleService(db).get_by_user(g.user_id),
         ))
+
+    @login_required
+    def post(self):
+        return self.get()
 
 
 class NewArticleAPI(Resource):
@@ -46,13 +55,9 @@ class NewArticleAPI(Resource):
         tags = request.form.get('tags').split(' ')  # TODO
         text = request.form.get('text')
         article = ArticleService(db).create(title=title, text=text)
-        print article
-        info = ArticleService(db).get_info(article, with_text=True)
-        return current_app.make_response(render_template(
-            'article.html',
-            show=True,
-            article=info
-        ))
+        return current_app.make_response(
+            redirect(url_for('Article.article', op='view', aid=article.id))
+        )
 
 
 class ArticleAPI(Resource):
@@ -63,19 +68,13 @@ class ArticleAPI(Resource):
             article = ArticleService(db).get(aid)
             article.visitor_count += 1
             db.session.commit()
-            info = ArticleService(db).get_info(article, with_text=True)
-            return current_app.make_response(render_template(
-                'article.html',
-                article=info
-            ))
         elif op == 'delete':
             article = ArticleService(db).get(aid)
             article.delete = True
             db.session.commit()
-            return current_app.make_response(render_template(
-                'articles.html',
-                articles=ArticleService(db).get_all(),
-            ))
+            return current_app.make_response(
+                redirect(url_for('Article.articles'))
+            )
         return current_app.make_response(render_template(
             'article.html',
             show=True,
@@ -90,13 +89,7 @@ class ArticleAPI(Resource):
             tags = request.form.get('tags').split(' ')  # TODO
             text = request.form.get('text')
             article = ArticleService(db).update(aid, title=title, text=text)
-            info = ArticleService(db).get_info(article, with_text=True)
-            return current_app.make_response(render_template(
-                'article.html',
-                show=True,
-                article=info
-            ))
-
+            return self.get(aid=aid, op='view')
 
 
 article_api.add_resource(

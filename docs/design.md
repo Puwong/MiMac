@@ -140,6 +140,7 @@ template里面的每一块对应的场景写清楚，传入的时候做确定
 - docs：文档（documentation）
 - drop: 删除文件
 - test: 添加 UnitTest
+- refa: 重构 (refactor)
 
 ## 后端
 

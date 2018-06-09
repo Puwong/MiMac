@@ -58,5 +58,3 @@ static_api.add_resource(
 
 
 
-
-

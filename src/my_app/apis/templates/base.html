@@ -37,15 +37,7 @@
             {%if g.user_id%}
             <li><a href={{url_for('Image.images')}}>Home</a></li>
             <li><a href={{url_for('Alg.algs')}}>Algorithm</a></li>
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Article <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href={{url_for("Article.mine")}}>My Articles</a></li>
-                <li><a href={{url_for("Article.articles")}}>All Articles</a></li>
-                  <!--<li role="separator" class="divider"></li>
-                <li class="dropdown-header">share you knowledge</li>-->
-              </ul>
-            </li>
+            <li><a href={{url_for('Article.articles')}}>Article</a></li>
             <li><a href={{url_for('Team.teams')}}>Team</a></li>
             {% if g.isAdmin %}
             <li class="dropdown">
