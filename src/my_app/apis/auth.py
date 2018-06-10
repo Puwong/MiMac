@@ -41,10 +41,10 @@ class LoginAPI(Resource):
 
     def post(self):
         username = request.form.get('username', None)
-        password = UserService.generate_pwd(request.form.get('password', None))
+        raw_pwd = request.form.get('password', None)
         remember = request.form.get('remember', None)
         next_url = self.args.next
-        user, message = UserService(db).check_user_passwd(username, password)
+        user, message = UserService(db).check_user_passwd(username, raw_pwd)
         if user is None:
             return redirect(url_for('Auth.login'))
         login_user(user, remember=remember)

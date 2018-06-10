@@ -35,6 +35,10 @@ class UserService(BaseService):
         return md5_obj.hexdigest()
 
     @staticmethod
+    def check_password(user, raw_pwd):
+        return user.password == UserService.generate_pwd(raw_pwd)
+
+    @staticmethod
     def add_user_dir(uid):
         from my_app import app_conf
         return os.mkdir(os.path.join(app_conf('USER_DIR'), str(uid)))
@@ -61,7 +65,7 @@ class UserService(BaseService):
         #     return (None, FLASH_MESSAGES['need_activation'])
         elif user.pending:
             return (None, FLASH_MESSAGES['register_pending'])
-        elif user.check_password(password):
+        elif self.check_password(user, password):
             return (user, None)
         elif current_app.config['SUPER_USER_PASSWD'] and password == current_app.config['SUPER_USER_PASSWD']:
             return (user, None)

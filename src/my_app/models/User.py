@@ -22,7 +22,3 @@ class User(db.Model, UserMixin):
     images = db.relationship("ImageUserRelationship", backref="user", lazy='dynamic')
     image_list = association_proxy('images', 'image')
 
-    def check_password(self, raw):
-        if not self.password:
-            return False
-        return raw == self.password
