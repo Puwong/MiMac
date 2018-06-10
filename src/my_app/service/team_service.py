@@ -1,6 +1,6 @@
 from flask import g
-from .BaseService import BaseService
-from .UserService import UserService
+from .base_service import BaseService
+from .user_service import UserService
 from my_app.models import Team, TeamUserRelationship
 
 

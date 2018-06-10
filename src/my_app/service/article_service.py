@@ -1,6 +1,6 @@
 from flask import g
-from .BaseService import BaseService
-from .UserService import UserService
+from .base_service import BaseService
+from .user_service import UserService
 from my_app.models import Article, TextNode
 
 
@@ -8,7 +8,6 @@ class ArticleService(BaseService):
     model = Article
 
     def get_by_user(self, id_or_ins, ignore_delete=False):
-        from .UserService import UserService
         user = UserService(self.db).get(id_or_ins)
         articles = list()
         for article in user.articles:
@@ -48,7 +47,6 @@ class ArticleService(BaseService):
         return article
 
     def create(self, title, text):
-        from .UserService import UserService
         article = self.model(title=title)
         self.db.session.add(article)
         for i in range((len(text)+999)//1000):

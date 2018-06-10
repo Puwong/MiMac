@@ -68,6 +68,11 @@ class ArticleAPI(Resource):
             article = ArticleService(db).get(aid)
             article.visitor_count += 1
             db.session.commit()
+            return current_app.make_response(render_template(
+                'article.html',
+                edit=True,  # actually it doesn't be used
+                article=ArticleService(db).get_info(aid, with_text=True),
+            ))
         elif op == 'delete':
             article = ArticleService(db).get(aid)
             article.delete = True

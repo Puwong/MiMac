@@ -1,39 +1,55 @@
 {% extends "base.html" %}
 {% block main_block %}
-<div class="center-block"><p>...</p></div>
-<br><br>
+{%if new%}
+<form class="form-horizontal" id="message_batch_form" action={{url_for('Message.new')}} method="post">
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Title</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" name="title" placeholder="Title of this conversation">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2 control-label">To User ID</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" name="to_uid" placeholder="The receiver">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Message Type</label>
+    <div class="col-sm-10">
+      <select name="type" form="message_batch_form" class="form-control">
+    {% for message_type in message_type.list() %}
+   <option value="{{message_type['code']}}">{{message_type['desc']}}</option>
+   {% endfor %}
+</select>
+    </div>
+  </div>
+    <div class="form-group">
+    <label class="col-sm-2 control-label">Context </label>
+    <div class="col-sm-10">
+        <textarea name="context" form="message_batch_form" class="form-control" rows="5" placeholder="(This field not work for image caption) Input labels separated by space like: cat dog etc"></textarea>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-default">Create </button>
+    </div>
+  </div>
+</form>
+{%else%}
+<div style="text-align:center;"><p>{{batch['title']}}</p></div>
+{% for message in batch['messages'] %}
 <div class="row">
-<div class="bg-success col-md-11">
+<div class="bg-success col-md-11 {%if message['from_user_id'] != g.user_id%}col-md-offset-1{%endif%}">
 <div class="container">
-<blockquote>
-<p>I love you</p>
-<small>2018.01.01 23:59:59</small>
-</blockquote>
-</div>
-</div>
-</div>
-<br>
-<div class="row">
-<div class="bg-info col-md-11 col-md-offset-1 row">
-<div class="container">
-<blockquote class="blockquote-reverse">
-<p>I love you too !!!</p>
-<small>2018.01.02 00:00:00</small>
-</blockquote>
-</div>
-</div>
-</div>
-{% for message in messages %}
-<div class="row">
-<div class="bg-success col-md-11 {%if message.from_user_id != g.user_id%}col-md-offset-1{%endif%}">
-<div class="container">
-<blockquote {%if message.from_user_id != g.user_id%}class="blockquote-reverse"{%endif%}>
-<p>{{message.context}}</p>
-<small>{{message.created_at}}</small>
+<blockquote {%if message['from_user_id'] != g.user_id%}class="blockquote-reverse"{%endif%}>
+<p>{{message['context']}}</p>
+<small>{{message['created_at']}}</small>
 </blockquote>
 </div>
 </div>
 </div>
 <br><br><br><br>
 {% endfor %}
+{%endif%}
 {% endblock %}

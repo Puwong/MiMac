@@ -11,6 +11,24 @@ class Constants(object):
     def types(cls):
         return cls._state_mapping.keys()
 
+    @classmethod
+    def list(cls):
+        return sorted([{'code': key, 'desc': cls._state_mapping[key]} for key in cls._state_mapping],
+                      key=lambda x: x['code'])
+
+
+class AppConfig(Constants):
+    PROJECT_DIR = "/Users/megvii/MiMac"
+    USER_DIR = PROJECT_DIR + '/user_file'
+    ALG_DIR = PROJECT_DIR + '/alg_file'
+    TRAIN_DIR = PROJECT_DIR + '/data'
+    ALLOWED_EXTENSIONS = set(['dicm', 'dcm', 'png', 'jpg', 'jpeg', 'gif'])
+
+    _state_mapping = {
+        USER_DIR: u'用户目录',
+        ALG_DIR: u'算法目录',
+    }
+
 
 class LoginState(Constants):
     STATE_OFFLINE = 0
@@ -45,7 +63,7 @@ class MessageType(Constants):
     _state_mapping = {
         NORMAL: u'普通消息',
         REPLY_NEEDED: u'需要回复',
-        YES_OR_NO: u'态度询问',
+        YES_OR_NO: u'是否题',
     }
 
 

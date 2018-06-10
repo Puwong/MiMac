@@ -13,6 +13,7 @@ class BaseService(object):
         self.json_keys = getattr(self, 'json_keys', [])
         self.search_fields = getattr(self, 'search_fields', [])
         self.sort_fields = getattr(self, 'sort_fields', [])
+        self.filter_fields = getattr(self, 'filter_fields', [])
 
     def get_info(self, *args, **kwargs):
         item = self.get(*args, **kwargs)
@@ -40,7 +41,6 @@ class BaseService(object):
         if query:
             if filters:
                 query = query.filter(or_(*filters))
-        # return [cls.model.id.in_(ids)] if ids else []
         return query
 
     def apply_sorts(self, query, sorts):
@@ -56,6 +56,20 @@ class BaseService(object):
         if query:
             query = query.order_by(*_sorts)
         return query, _sorts
+
+    def apply_filters(self, query, filters=None, **kwargs):
+        if filters is None:
+            filters = list()
+        for filter_ in filters:
+            if filter_ in self.filter_fields:
+                pf_name = 'filter_{}'.format(filter_)
+                if hasattr(self, pf_name):
+                    pf = getattr(self, pf_name)
+                    filters.extend(pf(**kwargs))
+        if query:
+            if filters:
+                query = query.filter(*filters)
+        return query
 
     def query_update(self, query, **kwargs):
         if 'sort' in kwargs.keys():

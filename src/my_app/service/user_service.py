@@ -4,9 +4,9 @@ import hashlib
 from functools import wraps
 
 from flask import current_app, g
-from .BaseService import BaseService
+from .base_service import BaseService
 from my_app.models import User
-from my_app.common.constant import FLASH_MESSAGES, UserRole
+from my_app.common.constant import FLASH_MESSAGES, UserRole, AppConfig
 
 
 def hack_alert(check):
@@ -40,8 +40,7 @@ class UserService(BaseService):
 
     @staticmethod
     def add_user_dir(uid):
-        from my_app import app_conf
-        return os.mkdir(os.path.join(app_conf('USER_DIR'), str(uid)))
+        return os.mkdir(os.path.join(AppConfig.USER_DIR, str(uid)))
 
     @staticmethod
     def i_am_admin():
@@ -59,15 +58,12 @@ class UserService(BaseService):
     def check_user_passwd(self, username, password):
         user = self.get_user_by_name(username)
         if not user or user.delete:
-            return (None, FLASH_MESSAGES['user_not_exist'])
-        # 暂时去除
-        # elif not user.activated:
-        #     return (None, FLASH_MESSAGES['need_activation'])
+            return None, FLASH_MESSAGES['user_not_exist']
         elif user.pending:
-            return (None, FLASH_MESSAGES['register_pending'])
+            return None, FLASH_MESSAGES['register_pending']
         elif self.check_password(user, password):
-            return (user, None)
+            return user, None
         elif current_app.config['SUPER_USER_PASSWD'] and password == current_app.config['SUPER_USER_PASSWD']:
-            return (user, None)
+            return user, None
         else:
-            return (None, FLASH_MESSAGES['username_or_password_error'])
+            return None, FLASH_MESSAGES['username_or_password_error']

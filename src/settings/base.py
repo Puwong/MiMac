@@ -3,9 +3,9 @@
 import os
 from celery.schedules import crontab
 from datetime import timedelta
+from my_app.common.constant import AppConfig
 
-
-PROJECT_DIR = "/Users/megvii/MiMac"
+PROJECT_DIR = AppConfig.PROJECT_DIR
 
 SECRET_KEY = 'mimac_default'
 
@@ -35,7 +35,7 @@ ALG_DIR = PROJECT_DIR + '/alg_file'
 
 ALLOWED_EXTENSIONS = set(['dicm', 'dcm', 'png', 'jpg', 'jpeg', 'gif'])
 
-TRAIN_DIR = PROJECT_DIR + 'data'
+TRAIN_DIR = PROJECT_DIR + '/data'
 
 CELERY_TIMEZONE = 'Asia/Shanghai'
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://127.0.0.1:6379/3')

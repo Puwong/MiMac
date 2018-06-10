@@ -136,10 +136,6 @@ def configure_blueprint(app, modules):
         app.register_blueprint(module, url_prefix=url_prefix)
 
 
-def app_conf(conf):
-    return app.config[conf]
-
-
 app = create_app()
 celery = make_celery(app)
 

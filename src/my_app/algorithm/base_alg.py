@@ -1,14 +1,15 @@
 import os
 from flask import g
+from my_app.foundation import db
+from my_app.service.alg_service import AlgService  # To solve the problem of recursion import
 from my_app.common.constant import BaseAlgorithm
 
 
 class BaseAlg(object):
 
     def __init__(self, image):
-        from my_app.common.tools import get_alg_path
         self.alg = BaseAlgorithm.Base
-        self.alg_dir = get_alg_path(image.alg)
+        self.alg_dir = AlgService(db).get_alg_path(image.alg)
         self.model_weight = os.path.join(self.alg_dir, 'weight.h5')
         self.model = os.path.join(self.alg_dir, 'model.json')
         self.image = image

@@ -11,5 +11,5 @@ class Message(db.Model):
     message_batch_id = db.Column(db.Integer, db.ForeignKey('message_batch.id'))
 
     context = db.Column(db.String(2048))
-    readed = db.Column(db.Boolean, nullable=False, default=False)
+    readed = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.Integer, default=time.time)

@@ -1,7 +1,11 @@
 import os
 
 from flask import g
-from .BaseService import BaseService
+from .base_service import BaseService
+from .user_service import UserService
+from my_app.common.db_helper import exists_query
+from my_app.common.tools import create_dir_loop
+from my_app.common.constant import AppConfig
 from my_app.models import Alg, AlgUserRelationship
 
 
@@ -12,19 +16,20 @@ class AlgService(BaseService):
     def get_all(self, **kwargs):
         return super(AlgService, self).get_all(delete=False, **kwargs)
 
+    def get_alg_path(self, id_or_ins):
+        return AppConfig.ALG_DIR + '/' + str(self.get(id_or_ins).id)
+
     def get_my_alg_ids(self, with_title=False):
-        from .UserService import UserService
         me = UserService(self.db).get(g.user_id)
         if with_title:
             return {i.alg_id: i.alg.title for i in me.algs}
         return [i.alg_id for i in me.algs]
 
     def create(self, **kwargs):
-        from my_app.common.tools import create_dir_loop, get_alg_path
         alg = self.model(**kwargs)
         self.db.session.add(alg)
         self.db.session.commit()
-        alg_path = get_alg_path(alg.id)
+        alg_path = self.get_alg_path(alg.id)
         create_dir_loop(alg_path)
         return alg
 
@@ -34,8 +39,6 @@ class AlgService(BaseService):
         self.db.session.commit()
 
     def add2user(self, a_id):
-        from .UserService import UserService
-        from my_app.common.db_helper import exists_query
         alg = AlgService(self.db).get(a_id)
         print alg.id, a_id
         if not alg or exists_query(AlgUserRelationship.query.filter(

@@ -1,10 +1,9 @@
 import json
 import os
+import datetime
 from PIL import Image
 from flask import g
-from my_app import app_conf
-from my_app.service import AlgService
-from my_app.foundation import db
+from my_app.common.constant import AppConfig
 
 
 def convert_file(dcm_file_path, jpg_file_path):
@@ -38,9 +37,8 @@ def file2json(file_dir):
 
 
 def allowed_file(filename):
-    from my_app import app_conf
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in app_conf('ALLOWED_EXTENSIONS')
+           filename.rsplit('.', 1)[1].lower() in AppConfig.ALLOWED_EXTENSIONS
 
 
 def remove_dir_loop(my_dir):
@@ -74,12 +72,18 @@ def get_user_file_path(filename, user_id=None):
 
 
 def get_file_path(*args, **kargs):
-    path = os.path.join(app_conf('USER_DIR'), *[str(i) for i in args])
+    path = os.path.join(AppConfig.USER_DIR, *[str(i) for i in args])
     if 'extension' in kargs.keys():
         path = path + '.' + kargs['extension']
     return path
 
 
-def get_alg_path(id_or_ins):
-    return os.path.join(app_conf('ALG_DIR'), str(AlgService(db).get(id_or_ins).id))
+def get_time_format(now=None, date_format="%Y-%m-%d %H:%M:%S"):
+    if type(now) == float:  # come from time.time()
+        now = datetime.datetime.fromtimestamp(now)
+    elif type(now) == datetime.datetime:  # come from datetime.datetime.now()
+        pass
+    else:
+        now = datetime.datetime.now()
+    return now.strftime(date_format)
 

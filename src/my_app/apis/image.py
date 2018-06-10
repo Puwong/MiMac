@@ -12,7 +12,7 @@ csrf.exempt(image_bp)
 image_api = Api(image_bp)
 
 
-def permission_check(image_id):
+def permission_check(image_id, **kwargs):
     iur = ImageUserRelationship.query.filter_by(user_id=g.user_id, image_id=image_id).all()
     image = ImageService(db).get(image_id)
     return len(iur) and not image.delete
