@@ -34,7 +34,8 @@ class BatchAPI(Resource):
         return current_app.make_response(render_template(
             'message_batch.html',
             show=True,
-            batch=MessageBatchServiice(db).get_info(bid),
+            message_type=MessageType,
+            batch=MessageBatchServiice(db).get_info(bid, with_message=True, with_reply=True),
         ))
 
 
@@ -51,12 +52,38 @@ class NewBatchAPI(Resource):
     @login_required
     def post(self):
         title = request.form.get('title')
-        type = request.form.get('type')
+        type = int(request.form.get('type'))
         context = request.form.get('context')
-        to_uid = request.form.get('to_uid')
+        to_uid = int(request.form.get('to_uid'))
         message_batch = MessageBatchServiice(db).create(title=title, to_uid=to_uid, type=type, context=context)
         return current_app.make_response(
             redirect(url_for('Message.batches'))
+        )
+
+
+class ReplyAPI(Resource):
+
+    @login_required
+    def get(self, bid, mid, yes):
+        return current_app.make_response(render_template(
+            'message_batch.html',
+            reply=mid,
+            message_type=MessageType,
+            context=MessageService(db).reply_context(mid, yes),
+            batch=MessageBatchServiice(db).get_info(bid),
+        ))
+
+    @login_required
+    def post(self, bid, mid, yes):
+        type = int(request.form.get('type'))
+        context = request.form.get('context')
+        reply_message_id = int(request.form.get('reply_message_id', 0))
+        if context is None:
+            return self.get(bid, reply_message_id, yes)
+        print type, context, reply_message_id
+        message_batch = MessageBatchServiice(db).reply(bid, reply_message_id, type, context)
+        return current_app.make_response(
+            redirect(url_for('Message.batch', bid=bid, op='show'))
         )
 
 
@@ -70,6 +97,12 @@ message_api.add_resource(
     NewBatchAPI,
     '/message/batches/new',
     endpoint='new'
+)
+
+message_api.add_resource(
+    ReplyAPI,
+    '/message/reply/<int:bid>/<int:mid>/<int:yes>',
+    endpoint='reply'
 )
 
 message_api.add_resource(
