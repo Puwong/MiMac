@@ -1,8 +1,13 @@
 {% extends "base.html" %}
 {% block main_block %}
 {% if show%}
-<h1>{{article['title']}}</h1>
-<pre>{{article['text']}}</pre>
+<h1 style="text-align: center">{{article['title']}}</h1>
+<div class="container" >
+<small style="float: right">浏览：{{article['visitor_count']}}&nbsp|&nbsp创建于：{{article['created_at']}}&nbsp|&nbsp最后修改时间：{{article['modified_at']}}</small>
+</div>
+<div class="container">
+<pre style="font-size:22px">{{article['text']}}</pre>
+</div>
 <a class="btn btn-lg btn-primary" href={{url_for('Article.article',aid=article['id'],op='edit')}} role="button">Edit &raquo;</a>
 {% else %}
 <form class="form-horizontal" id="article_form" action={%if article%}{{url_for('Article.article',aid=article['id'],op='edit')}}{%else%}{{url_for('Article.new')}}{%endif%} method="post">

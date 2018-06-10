@@ -2,6 +2,7 @@ from flask import g
 from .base_service import BaseService
 from .user_service import UserService
 from my_app.models import Article, TextNode
+from my_app.common.tools import get_time_format
 
 
 class ArticleService(BaseService):
@@ -18,6 +19,10 @@ class ArticleService(BaseService):
     def get_info(self, id_or_ins, with_text=False):
         ins = self.get(id_or_ins)
         info = super(ArticleService, self).get_info(ins)
+        info.update({
+            'created_at': get_time_format(info['created_at']),
+            'modified_at': get_time_format(info['modified_at']),
+        })
         if with_text:
             text = u''
             for text_node in ins.text_nodes:

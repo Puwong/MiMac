@@ -70,7 +70,7 @@ class ReplyAPI(Resource):
             reply=mid,
             message_type=MessageType,
             context=MessageService(db).reply_context(mid, yes),
-            batch=MessageBatchServiice(db).get_info(bid),
+            batch=MessageBatchServiice(db).get_info(bid, with_message=True, with_reply=True),
         ))
 
     @login_required

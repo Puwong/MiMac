@@ -38,6 +38,35 @@
 </form>
 {%else%}
 <div style="text-align:center;"><p>{{batch['title']}}</p></div>
+{% for message in batch['messages'] %}
+<div class="row">
+  <div class="col-md-11 {%if message['from_user_id'] != g.user_id%}col-md-offset-1{%endif%} {%if message['readed']%}{%if message['from_user_id'] != g.user_id%}bg-info{%else%}bg-success{%endif%}{%else%}bg-danger{%endif%}">
+    <div class="container">
+      <br>
+      <div {%if message['from_user_id'] != g.user_id%}style="float:right; text-align:right"{%endif%}>
+      {%if message['reply_message_id'] and 'reply_context' in message.keys()%}
+        <blockquote>
+          <small>Message id: {{message['reply_message_id']}}</small>
+          <small>{{message['reply_context']}}</small>
+        </blockquote>
+      {%endif%}
+        <p>{{message['context']}}</p>
+        <small>Message id: {{message['id']}}, state: {%if message['readed']%}已读{%else%}未读{%endif%}, publish time: {{message['created_at']}}</small>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      {%if message['type']==message_type.YES_OR_NO%}
+      <a class="btn btn-default col-md-2 {%if message['from_user_id'] != g.user_id%}col-md-offset-8{%endif%}" role="button" href={{url_for('Message.reply',bid=batch.id,mid=message['id'],yes=1)}}>Yes</a>
+      <a class="btn btn-default col-md-2" role="button" href={{url_for('Message.reply',bid=batch.id,mid=message['id'],yes=0)}}>No</a>
+      {%else%}
+      <a class="btn btn-default col-md-4 {%if message['from_user_id'] != g.user_id%}col-md-offset-8{%endif%}" role="button" href={{url_for('Message.reply',bid=batch.id,mid=message['id'],yes=0)}}>Reply</a>
+      {%endif%}
+    </div>
+  </div>
+</div>
+<br>
+{% endfor %}
 <form class="form-horizontal" id="message_form" action={{url_for('Message.reply',bid=batch.id,mid=0,yes=0)}} method="post">
   <div class="form-group">
     <label class="col-sm-2 control-label">To Message ID</label>
@@ -67,34 +96,5 @@
     </div>
   </div>
 </form>
-{% for message in batch['messages'] %}
-<div class="row">
-  <div class="col-md-11 {%if message['from_user_id'] != g.user_id%}col-md-offset-1{%endif%} {%if message['readed']%}{%if message['from_user_id'] != g.user_id%}bg-info{%else%}bg-success{%endif%}{%else%}bg-danger{%endif%}">
-    <div class="container">
-      <br>
-      <div {%if message['from_user_id'] != g.user_id%}style="float:right; text-align:right"{%endif%}>
-      {%if message['reply_message_id'] and 'reply_context' in message.keys()%}
-        <blockquote>
-          <small>Message id: {{message['id']}}</small>
-          <small>{{message['reply_context']}}</small>
-        </blockquote>
-      {%endif%}
-        <p>{{message['context']}}</p>
-        <small>Message id: {{message['id']}}, state: {%if message['readed']%}已读{%else%}未读{%endif%}, publish time: {{message['created_at']}}</small>
-      </div>
-    </div>
-    <br>
-    <div class="row">
-      {%if message['type']==message_type.YES_OR_NO%}
-      <a class="btn btn-default col-md-2 {%if message['from_user_id'] != g.user_id%}col-md-offset-8{%endif%}" role="button" href={{url_for('Message.reply',bid=batch.id,mid=message['id'],yes=1)}}>Yes</a>
-      <a class="btn btn-default col-md-2" role="button" href={{url_for('Message.reply',bid=batch.id,mid=message['id'],yes=0)}}>No</a>
-      {%else%}
-      <a class="btn btn-default col-md-4 {%if message['from_user_id'] != g.user_id%}col-md-offset-8{%endif%}" role="button" href={{url_for('Message.reply',bid=batch.id,mid=message['id'],yes=0)}}>Reply</a>
-      {%endif%}
-    </div>
-  </div>
-</div>
-<br>
-{% endfor %}
 {%endif%}
 {% endblock %}
