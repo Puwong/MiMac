@@ -52,7 +52,6 @@ def _add_alg():
         'labels': [u'良性乳腺', u'恶性乳腺']
     }))
     alg_path = AlgService(db).get_alg_path(cd_alg)
-    print alg_path
     copyfile(alg_path + '/../../deeplearn/b_c_basic.json', alg_path + '/model.json')
     copyfile(alg_path + '/../../deeplearn/b_c_cat_dog.h5', alg_path + '/weight.h5')
 
@@ -81,6 +80,14 @@ def createall():
 def resetall():
     dropall()
     createall()
+
+
+@manager.command
+def test():
+    """Run the unit tests"""
+    import unittest
+    tests=unittest.TestLoader().discover('test')
+    unittest.TextTestRunner(verbosity=2).run(tests)
 
 
 if __name__ == "__main__":

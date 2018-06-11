@@ -19,7 +19,6 @@ def convert_file(dcm_file_path, jpg_file_path):
 def resize_img(from_dir, to_dir, new_size=(224,224)):
     img = Image.open(from_dir)
     img = img.resize(new_size)
-    print to_dir
     img.save(to_dir)
 
 

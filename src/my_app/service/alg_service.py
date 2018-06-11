@@ -40,7 +40,6 @@ class AlgService(BaseService):
 
     def add2user(self, a_id):
         alg = AlgService(self.db).get(a_id)
-        print alg.id, a_id
         if not alg or exists_query(AlgUserRelationship.query.filter(
                 AlgUserRelationship.user_id==g.user_id).filter(AlgUserRelationship.alg_id==alg.id)) or alg.id != a_id:
             return False
@@ -48,7 +47,6 @@ class AlgService(BaseService):
         relation = AlgUserRelationship()
         relation.alg = alg
         user.algs.append(relation)
-        print user, alg, relation
         self.db.session.commit()
 
 

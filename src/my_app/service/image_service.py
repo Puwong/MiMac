@@ -30,8 +30,6 @@ class ImageService(BaseService):
     def create_tiny(self, id_or_ins):
         image = self.get(id_or_ins)
         suffix = image.title.split('.')[-1]
-        print image.title
-        print image.store_uri, '\n',image.uri
         if suffix == 'dcm':
             convert_file(image.store_uri, image.uri)
             resize_img(image.uri, self.get_tiny_path(image))

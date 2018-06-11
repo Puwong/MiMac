@@ -80,7 +80,6 @@ class ReplyAPI(Resource):
         reply_message_id = int(request.form.get('reply_message_id', 0))
         if context is None:
             return self.get(bid, reply_message_id, yes)
-        print type, context, reply_message_id
         message_batch = MessageBatchServiice(db).reply(bid, reply_message_id, type, context)
         return current_app.make_response(
             redirect(url_for('Message.batch', bid=bid, op='show'))

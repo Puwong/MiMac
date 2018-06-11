@@ -88,7 +88,6 @@ class ArticleAPI(Resource):
 
     @login_required
     def post(self, aid, op):
-        print 000
         if op == 'edit':
             title = request.form.get('title')
             tags = request.form.get('tags').split(' ')  # TODO

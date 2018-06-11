@@ -33,8 +33,6 @@ class MessageService(BaseService):
 
     def get_info(self, id_or_ins, with_reply=False):
         message = self.get(id_or_ins)
-        print id_or_ins.__dict__, message.reply_message_id
-        print 111 if message.reply_message_id else ""
         if message.type == MessageType.NORMAL and not message.readed:
             self.read(message)
         info = super(MessageService, self).get_info(message)

@@ -49,7 +49,6 @@ class UserService(BaseService):
     def rest_password(self, id_or_ins):
         user = self.get(id_or_ins)
         user.password = self.generate_pwd('123456')
-        print user.id
         self.db.session.commit()
 
     def get_user_by_name(self, username):
